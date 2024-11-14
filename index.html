@@ -18,10 +18,12 @@
         td {
             padding: 10px;
             border: 1px solid #00ff00;
+            width: 33.33%; /* Cada columna ocupa un tercio del ancho de la tabla */
         }
         img {
-            width: 100%;
-            height: auto;
+            width: 100%; /* Ajusta la imagen al ancho de la celda */
+            height: 200px; /* Define una altura fija para que no varíe */
+            object-fit: cover; /* Ajusta la imagen sin distorsionarla */
         }
     </style>
 </head>
@@ -30,17 +32,18 @@
     <table id="tablaCamaras"></table>
 
     <script>
-        const totalCamaras = 134;
+        const camaraInicio = 2;
+        const camaraFin = 90;
         const columnas = 3;
         
-        // Generar filas y columnas dinámicamente
+        // Generar filas y columnas dinámicamente para las cámaras del 2 al 90
         function generarTabla() {
             const tabla = document.getElementById('tablaCamaras');
-            for (let i = 0; i < totalCamaras; i += columnas) {
+            for (let i = camaraInicio; i <= camaraFin; i += columnas) {
                 const fila = document.createElement('tr');
                 for (let j = 0; j < columnas; j++) {
-                    const camaraId = i + j + 1;
-                    if (camaraId > totalCamaras) break;
+                    const camaraId = i + j;
+                    if (camaraId > camaraFin) break;
 
                     const celda = document.createElement('td');
                     const imagen = document.createElement('img');
@@ -56,7 +59,7 @@
 
         // Actualizar imágenes cada 2 segundos
         function actualizarCamaras() {
-            for (let i = 1; i <= totalCamaras; i++) {
+            for (let i = camaraInicio; i <= camaraFin; i++) {
                 const camara = document.getElementById(`cam${i}`);
                 if (camara) {
                     camara.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${i}?${new Date().getTime()}`;
