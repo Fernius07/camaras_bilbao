@@ -2,6 +2,8 @@
 
 Este proyecto es una página web que muestra en tiempo real las cámaras de tráfico de la ciudad de Bilbao. La página permite visualizar las cámaras desde el número 2 hasta el 90, organizadas en una tabla de 3 columnas. Cada imagen se actualiza automáticamente cada 2 segundos para mostrar el estado en vivo de cada cámara.
 
+Puedes ver la web en funcionamiento aquí: [Cámaras en Vivo de Bilbao](https://fernius07yt.github.io/camaras_bilbao/).
+
 ## Descripción
 
 La página está diseñada para mostrar las cámaras de tráfico en una tabla con estilo retro, utilizando un fondo negro y texto verde. La tabla mantiene un tamaño fijo, asegurando que las imágenes no modifiquen la estructura al actualizarse.
@@ -30,11 +32,7 @@ La página está diseñada para mostrar las cámaras de tráfico en una tabla co
    cd nombre-del-repositorio
    ```
 
-3. Abre el archivo `index.html` en tu navegador para ver la página en funcionamiento. También puedes configurar GitHub Pages para visualizar la página en línea:
-
-   - Ve a **Settings** en tu repositorio de GitHub.
-   - En **Pages**, selecciona la rama (por ejemplo, `main`) y la carpeta raíz o `/docs`.
-   - Guarda los cambios y visita la URL proporcionada por GitHub para ver la página en vivo.
+3. Abre el archivo `index.html` en tu navegador para ver la página en funcionamiento o visita la página en GitHub Pages en [https://fernius07yt.github.io/camaras_bilbao/](https://fernius07yt.github.io/camaras_bilbao/).
 
 ## Ejemplo de Uso
 
@@ -51,8 +49,3 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo `LICENSE` para má
 ## Créditos
 
 Datos de las cámaras obtenidos desde [GeoBilbao](https://www.geobilbao.eus/).
-
-### Explicación de las secciones:
-- **Descripción y Características**: Brindan una visión general del propósito y funcionalidades del proyecto.
-- **Configuración y Ejecución**: Explica cómo clonar y ejecutar el proyecto, así como cómo configurarlo en GitHub Pages.
-- **Licencia y Créditos**: Atribuciones y detalles sobre la licencia del proyecto. 
