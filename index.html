@@ -19,11 +19,12 @@
             padding: 10px;
             border: 1px solid #00ff00;
             width: 33.33%; /* Cada columna ocupa un tercio del ancho de la tabla */
+            height: 300px; /* Tamaño más grande para cada celda */
         }
         img {
-            width: 100%; /* Ajusta la imagen al ancho de la celda */
-            height: 200px; /* Define una altura fija para que no varíe */
-            object-fit: cover; /* Ajusta la imagen sin distorsionarla */
+            max-width: 100%; /* Ajusta la imagen al ancho de la celda sin recortar */
+            max-height: 100%; /* Ajusta la imagen a la altura de la celda sin recortar */
+            object-fit: contain; /* Mantiene toda la imagen visible */
         }
     </style>
 </head>
