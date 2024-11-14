@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cámaras de Bilbao</title>
+    <style>
+        body {
+            background-color: black;
+            color: #00ff00;
+            font-family: "Courier New", Courier, monospace;
+            text-align: center;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        td {
+            padding: 10px;
+            border: 1px solid #00ff00;
+        }
+        img {
+            width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+    <h1>Cámaras en Vivo - Bilbao</h1>
+    <table id="tablaCamaras"></table>
+
+    <script>
+        const totalCamaras = 134;
+        const columnas = 3;
+        
+        // Generar filas y columnas dinámicamente
+        function generarTabla() {
+            const tabla = document.getElementById('tablaCamaras');
+            for (let i = 0; i < totalCamaras; i += columnas) {
+                const fila = document.createElement('tr');
+                for (let j = 0; j < columnas; j++) {
+                    const camaraId = i + j + 1;
+                    if (camaraId > totalCamaras) break;
+
+                    const celda = document.createElement('td');
+                    const imagen = document.createElement('img');
+                    imagen.id = `cam${camaraId}`;
+                    imagen.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${camaraId}`;
+                    imagen.alt = `Cámara ${camaraId}`;
+                    celda.appendChild(imagen);
+                    fila.appendChild(celda);
+                }
+                tabla.appendChild(fila);
+            }
+        }
+
+        // Actualizar imágenes cada 2 segundos
+        function actualizarCamaras() {
+            for (let i = 1; i <= totalCamaras; i++) {
+                const camara = document.getElementById(`cam${i}`);
+                if (camara) {
+                    camara.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${i}?${new Date().getTime()}`;
+                }
+            }
+        }
+
+        generarTabla(); // Genera la tabla al cargar la página
+        setInterval(actualizarCamaras, 2000); // Actualiza cada 2 segundos
+    </script>
+</body>
+</html>
