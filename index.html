@@ -18,13 +18,19 @@
         td {
             padding: 10px;
             border: 1px solid #00ff00;
-            width: 33.33%; /* Cada columna ocupa un tercio del ancho de la tabla */
-            height: 300px; /* Tamaño más grande para cada celda */
+            width: 33.33%; /* Cada columna ocupa un tercio del ancho de la tabla en pantallas grandes */
+            height: 300px;
         }
         img {
-            max-width: 100%; /* Ajusta la imagen al ancho de la celda sin recortar */
-            max-height: 100%; /* Ajusta la imagen a la altura de la celda sin recortar */
-            object-fit: contain; /* Mantiene toda la imagen visible */
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        /* Cambia a una columna en pantallas pequeñas */
+        @media (max-width: 600px) {
+            td {
+                width: 100%; /* Cada columna ocupa el ancho completo en pantallas pequeñas */
+            }
         }
     </style>
 </head>
@@ -36,8 +42,7 @@
         const camaraInicio = 2;
         const camaraFin = 90;
         const columnas = 3;
-        
-        // Generar filas y columnas dinámicamente para las cámaras del 2 al 90
+
         function generarTabla() {
             const tabla = document.getElementById('tablaCamaras');
             for (let i = camaraInicio; i <= camaraFin; i += columnas) {
@@ -58,7 +63,6 @@
             }
         }
 
-        // Actualizar imágenes cada 2 segundos
         function actualizarCamaras() {
             for (let i = camaraInicio; i <= camaraFin; i++) {
                 const camara = document.getElementById(`cam${i}`);
@@ -69,7 +73,7 @@
         }
 
         generarTabla(); // Genera la tabla al cargar la página
-        setInterval(actualizarCamaras, 5000); // Actualiza cada 2 segundos
+        setInterval(actualizarCamaras, 5000); // Actualiza cada 5 segundos
     </script>
 </body>
 </html>
