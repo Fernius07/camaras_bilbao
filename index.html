@@ -39,37 +39,72 @@
     <table id="tablaCamaras"></table>
 
     <script>
-        const camaraInicio = 2;
-        const camaraFin = 300;
+        const camarasPrincipales = { inicio: 2, fin: 90 }; // Rango principal de cámaras
+        const camarasAdicionales = [150, 151, 152, 153, 154]; // Cámaras adicionales
         const columnas = 3;
 
         function generarTabla() {
             const tabla = document.getElementById('tablaCamaras');
-            for (let i = camaraInicio; i <= camaraFin; i += columnas) {
+
+            // Generar filas y columnas para el rango principal de cámaras
+            for (let i = camarasPrincipales.inicio; i <= camarasPrincipales.fin; i += columnas) {
                 const fila = document.createElement('tr');
                 for (let j = 0; j < columnas; j++) {
                     const camaraId = i + j;
-                    if (camaraId > camaraFin) break;
+                    if (camaraId > camarasPrincipales.fin) break;
 
-                    const celda = document.createElement('td');
-                    const imagen = document.createElement('img');
-                    imagen.id = `cam${camaraId}`;
-                    imagen.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${camaraId}`;
-                    imagen.alt = `Cámara ${camaraId}`;
-                    celda.appendChild(imagen);
+                    const celda = crearCeldaCamara(camaraId);
                     fila.appendChild(celda);
                 }
                 tabla.appendChild(fila);
             }
+
+            // Generar filas para las cámaras adicionales
+            let filaAdicional = document.createElement('tr');
+            camarasAdicionales.forEach((camaraId, index) => {
+                const celda = crearCeldaCamara(camaraId);
+                filaAdicional.appendChild(celda);
+
+                // Crear una nueva fila cada vez que se completa una fila de 3 columnas
+                if ((index + 1) % columnas === 0) {
+                    tabla.appendChild(filaAdicional);
+                    filaAdicional = document.createElement('tr');
+                }
+            });
+
+            // Agregar la última fila si no estaba completa
+            if (filaAdicional.children.length > 0) {
+                tabla.appendChild(filaAdicional);
+            }
+        }
+
+        // Crear una celda con una cámara
+        function crearCeldaCamara(camaraId) {
+            const celda = document.createElement('td');
+            const imagen = document.createElement('img');
+            imagen.id = `cam${camaraId}`;
+            imagen.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${camaraId}`;
+            imagen.alt = `Cámara ${camaraId}`;
+            celda.appendChild(imagen);
+            return celda;
         }
 
         function actualizarCamaras() {
-            for (let i = camaraInicio; i <= camaraFin; i++) {
+            // Actualizar las cámaras principales
+            for (let i = camarasPrincipales.inicio; i <= camarasPrincipales.fin; i++) {
                 const camara = document.getElementById(`cam${i}`);
                 if (camara) {
                     camara.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${i}?${new Date().getTime()}`;
                 }
             }
+
+            // Actualizar las cámaras adicionales
+            camarasAdicionales.forEach(camaraId => {
+                const camara = document.getElementById(`cam${camaraId}`);
+                if (camara) {
+                    camara.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${camaraId}?${new Date().getTime()}`;
+                }
+            });
         }
 
         generarTabla(); // Genera la tabla al cargar la página
