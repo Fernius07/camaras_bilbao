@@ -1,242 +1,102 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>Cámaras de Bilbao</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BILBAO SECURITY COMMAND CENTER</title>
+    <!-- Importing a tech-looking font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
 
-    <style>
-        :root{
-            --bg-900: #051021;
-            --bg-800: #071428;
-            --panel:  #0b2b44;
-            --card:   #0f3850;
-            --accent: #2563eb;
-            --accent-2:#0ea5ff;
-            --muted: rgba(230,242,255,0.7);
-            --glass: rgba(255,255,255,0.03);
-            --radius: 14px;
-            --container-max: 1280px; /* ancho mayor para recuadros más anchos */
-            --gap: 16px;
-        }
-
-        /* Base */
-        *{box-sizing:border-box}
-        html,body{height:100%}
-        body{
-            margin:0;
-            font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-            background:
-                radial-gradient(800px 400px at 10% 10%, rgba(14,165,255,0.03), transparent 8%),
-                radial-gradient(700px 350px at 95% 90%, rgba(37,99,235,0.03), transparent 10%),
-                linear-gradient(180deg,var(--bg-900), var(--bg-800));
-            color: #E8F6FF;
-            -webkit-font-smoothing:antialiased;
-            -moz-osx-font-smoothing:grayscale;
-            padding:28px;
-            display:flex;
-            justify-content:center;
-        }
-
-        /* Contenedor central */
-        .container{
-            width:100%;
-            max-width:var(--container-max);
-        }
-
-        h1{
-            margin:0 0 18px 0;
-            font-size:22px;
-            font-weight:600;
-            color: #EAF6FF;
-            letter-spacing:-0.3px;
-            text-align:center;
-        }
-
-        /* Layout de filas: usar flex en cada <tr> para garantizar 3 celdas por fila */
-        table {
-            width:100%;
-            border-collapse: separate;
-            border-spacing:0; /* usaremos gap entre tr/td con flex/gap */
-            margin:0;
-        }
-
-        /* Cada fila actuará como una fila-flex con separación entre columnas */
-        tr {
-            display: flex;
-            gap: var(--gap);
-            margin-bottom: var(--gap);
-        }
-
-        /* Celdas como tarjetas; calculamos un ancho fijo para 3 columnas por fila.
-           Restamos el espacio ocupado por los gaps (dos gaps entre 3 columnas = 2 * --gap). */
-        td {
-            padding:8px;
-            flex: 0 0 calc((100% - (2 * var(--gap))) / 3);
-            height: 320px; /* altura ampliada para boxes más anchos */
-            background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-            border-radius: var(--radius);
-            border: 1px solid rgba(255,255,255,0.04);
-            box-shadow: 0 8px 30px rgba(2,6,23,0.55);
-            vertical-align: top;
-            overflow:hidden;
-            transition: transform .12s ease, box-shadow .12s ease;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-width: 0; /* importante para que flex items no crezcan y provoquen overflow */
-        }
-
-        /* Si una fila tiene menos de 3 celdas, las celdas ocupan su ancho calculado y no se estiran */
-        td:last-child {
-            margin-right: 0;
-        }
-
-        td:hover{
-            transform: translateY(-6px);
-            box-shadow: 0 18px 50px rgba(2,6,23,0.7);
-        }
-
-        /* Wrapper para asegurar que la imagen ocupe todo el recuadro disponible */
-        .img-wrapper{
-            width:100%;
-            height:100%;
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            overflow:hidden;
-        }
-
-        /* Aseguramos que la imagen "quepa" dentro del recuadro (sin recortar) */
-        img {
-            width:100%;
-            height:100%;
-            object-fit: contain; /* muestra la imagen completa dentro del recuadro */
-            display:block;
-            border-radius: calc(var(--radius) - 6px);
-            background: linear-gradient(90deg, rgba(2,10,30,0.6), rgba(2,10,40,0.6));
-        }
-
-        /* Responsive: en pantallas estrechas pasamos a una columna por fila */
-        @media (max-width: 900px) {
-            :root{ --gap: 12px; }
-            tr {
-                display:block;
-            }
-            td {
-                display:block;
-                width:100%;
-                flex: none;
-                height: 280px;
-                margin-bottom: var(--gap);
-            }
-        }
-
-        @media (max-width: 420px){
-            body{ padding:16px }
-            h1{ font-size:18px }
-            td{ height:200px }
-        }
-
-        /* Pequeña clase de caption por si quieres superponer texto más tarde */
-        .caption {
-            position:absolute;
-            left:12px;
-            bottom:12px;
-            background: linear-gradient(90deg, rgba(2,6,23,0.6), rgba(2,6,23,0.45));
-            color: var(--muted);
-            padding:6px 10px;
-            border-radius:10px;
-            font-size:13px;
-            backdrop-filter: blur(4px);
-            border:1px solid rgba(255,255,255,0.03);
-        }
-    </style>
+    <!-- External CSS -->
+    <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
-    <div class="container">
-        <h1>Cámaras en Vivo - Bilbao</h1>
-        <table id="tablaCamaras"></table>
+
+    <div class="grid-bg"></div>
+
+    <!-- LOGIN SCREEN -->
+    <div id="login-screen">
+        <div class="login-panel">
+            <div class="login-header">
+                <div style="font-size: 12px; color: var(--term-dim); margin-bottom: 5px;">SISTEMA SEGURIDAD MUNICIPAL
+                </div>
+                ACCESO CONTROLADO
+            </div>
+
+            <div class="login-form">
+                <div class="input-group">
+                    <span class="input-label">IDENTIDAD DE USUARIO</span>
+                    <div class="fake-input" id="user-input"><span class="cursor" id="cursor-user"
+                            style="display:none"></span></div>
+                </div>
+
+                <div class="input-group">
+                    <span class="input-label">CLAVE DE ACCESO (ENCRIPTADA)</span>
+                    <div class="fake-input" id="pass-input"><span class="cursor" id="cursor-pass"
+                            style="display:none"></span></div>
+                </div>
+
+                <div class="status-log" id="status-log">
+                    <!-- Logs appear here -->
+                </div>
+
+                <button class="btn-main" id="btn-login" onclick="iniciarSecuenciaLogin()">INICIAR SESIÓN</button>
+            </div>
+        </div>
     </div>
 
-    <script>
-        const camarasPrincipales = { inicio: 2, fin: 90 }; // Rango principal de cámaras
-        const camarasAdicionales = [150, 151, 152, 153, 154]; // Cámaras adicionales
-        const columnas = 3; // Mantenemos 3 columnas
+    <!-- DASHBOARD -->
+    <div id="dashboard">
+        <!-- Decoration corners -->
+        <div class="hud-corner tl"></div>
+        <div class="hud-corner tr"></div>
+        <div class="hud-corner bl"></div>
+        <div class="hud-corner br"></div>
 
-        function generarTabla() {
-            const tabla = document.getElementById('tablaCamaras');
+        <div class="top-bar">
+            <div class="system-title">
+                <div class="shield-icon">🛡</div>
+                CENTRO DE SEGURIDAD DE BILBAO
+            </div>
+            <div class="system-time">
+                <div style="font-size:10px; color:var(--term-dim);">ESTADO DEL SISTEMA</div>
+                <div style="color:var(--term-green);">● ACTIVO <span id="clock"
+                        style="color:white; margin-left:10px;">00:00:00</span></div>
+            </div>
+        </div>
 
-            // Generar filas y columnas para el rango principal de cámaras
-            for (let i = camarasPrincipales.inicio; i <= camarasPrincipales.fin; i += columnas) {
-                const fila = document.createElement('tr');
-                for (let j = 0; j < columnas; j++) {
-                    const camaraId = i + j;
-                    if (camaraId > camarasPrincipales.fin) break;
+        <div class="content-area">
+            <div class="sidebar">
+                <div class="sidebar-folder">
+                    <h3>DISTRITOS</h3>
+                    <div id="district-list">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+                <div class="sidebar-folder">
+                    <h3>ESTADÍSTICAS</h3>
+                    <div style="font-size: 12px; color: var(--term-bright);">
+                        CPU LOAD: 24%<br>
+                        NET DO: 1.4 GB/s<br>
+                        ACTIVE FEEDS: <span id="feed-count">0</span>
+                    </div>
+                </div>
+            </div>
 
-                    const celda = crearCeldaCamara(camaraId);
-                    fila.appendChild(celda);
-                }
-                tabla.appendChild(fila);
-            }
+            <div class="cameras-container">
+                <div class="grid-layout" id="tablaCamaras">
+                    <!-- Javascript will populate this -->
+                </div>
+            </div>
+        </div>
+    </div>
 
-            // Generar filas para las cámaras adicionales
-            let filaAdicional = document.createElement('tr');
-            camarasAdicionales.forEach((camaraId, index) => {
-                const celda = crearCeldaCamara(camaraId);
-                filaAdicional.appendChild(celda);
-
-                // Crear una nueva fila cada vez que se completa una fila de 3 columnas
-                if ((index + 1) % columnas === 0) {
-                    tabla.appendChild(filaAdicional);
-                    filaAdicional = document.createElement('tr');
-                }
-            });
-
-            // Agregar la última fila si no estaba completa
-            if (filaAdicional.children.length > 0) {
-                tabla.appendChild(filaAdicional);
-            }
-        }
-
-        // Crear una celda con una cámara
-        function crearCeldaCamara(camaraId) {
-            const celda = document.createElement('td');
-
-            // envoltorio para asegurar que la imagen se centre y que object-fit:contain funcione bien
-            const wrapper = document.createElement('div');
-            wrapper.className = 'img-wrapper';
-
-            const imagen = document.createElement('img');
-            imagen.id = `cam${camaraId}`;
-            imagen.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${camaraId}`;
-            imagen.alt = `Cámara ${camaraId}`;
-
-            wrapper.appendChild(imagen);
-            celda.appendChild(wrapper);
-            return celda;
-        }
-
-        function actualizarCamaras() {
-            // Actualizar las cámaras principales
-            for (let i = camarasPrincipales.inicio; i <= camarasPrincipales.fin; i++) {
-                const camara = document.getElementById(`cam${i}`);
-                if (camara) {
-                    camara.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${i}?${new Date().getTime()}`;
-                }
-            }
-
-            // Actualizar las cámaras adicionales
-            camarasAdicionales.forEach(camaraId => {
-                const camara = document.getElementById(`cam${camaraId}`);
-                if (camara) {
-                    camara.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${camaraId}?${new Date().getTime()}`;
-                }
-            });
-        }
-
-        generarTabla(); // Genera la tabla al cargar la página
-        setInterval(actualizarCamaras, 5000); // Actualiza cada 5 segundos
-    </script>
+    <!-- External JS -->
+    <script src="script.js"></script>
 </body>
+
 </html>
