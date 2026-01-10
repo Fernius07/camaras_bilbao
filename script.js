@@ -17,6 +17,41 @@ distritos["TODO"] = Array.from(allIds).sort((a, b) => a - b);
 
 let currentIds = distritos["TODO"]; // Default to ALL
 
+// --- MODAL STATE ---
+let currentModalId = null;
+
+// Helper to find district for a camera ID
+function getDistritoPorCamara(id) {
+    for (const [nombre, ids] of Object.entries(distritos)) {
+        if (nombre !== "TODO" && ids.includes(id)) {
+            return nombre;
+        }
+    }
+    return "UNKNOWN";
+}
+
+function abrirModal(id) {
+    sfx.beep();
+    currentModalId = id;
+    const modal = document.getElementById('camera-modal');
+    modal.classList.add('active');
+
+    document.getElementById('modal-cam-name').innerText = `DETALLE CAM_${String(id).padStart(3, '0')}`;
+    const img = document.getElementById('modal-img');
+    img.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${id}?t=${new Date().getTime()}`;
+
+    const distrito = getDistritoPorCamara(id);
+    document.getElementById('modal-cam-data').innerText = `ID: ${id} - DISTRITO: ${distrito}`;
+}
+
+function cerrarModal() {
+    sfx.beep();
+    const modal = document.getElementById('camera-modal');
+    modal.classList.remove('active');
+    currentModalId = null;
+    document.getElementById('modal-img').src = ""; // Clear to stop loading
+}
+
 // --- AUDIO SYSTEM ---
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx;
@@ -176,8 +211,10 @@ function generarGrilla() {
     container.innerHTML = '';
 
     currentIds.forEach(id => {
+        const distrito = getDistritoPorCamara(id);
         const card = document.createElement('div');
         card.className = 'cam-card';
+        card.onclick = () => abrirModal(id); // Click handler for modal
         card.innerHTML = `
             <div class="cam-header">
                 <span>CAM_${String(id).padStart(3, '0')}</span>
@@ -189,7 +226,7 @@ function generarGrilla() {
             </div>
             <div class="cam-footer">
                 <span>ID: ${id}</span>
-                <span>RES: 720p</span>
+                <span>${distrito}</span>
             </div>
         `;
         container.appendChild(card);
@@ -201,11 +238,20 @@ function generarGrilla() {
 function actualizarCamaras() {
     const timestamp = new Date().getTime();
 
+    // Update dashboard images
     const images = document.querySelectorAll('.cam-feed img');
     images.forEach(img => {
         const id = img.id.replace('img-cam-', '');
         img.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${id}?t=${timestamp}`;
     });
+
+    // Update Modal Image if active
+    if (currentModalId !== null) {
+        const modalImg = document.getElementById('modal-img');
+        if (modalImg) {
+            modalImg.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${currentModalId}?t=${timestamp}`;
+        }
+    }
 }
 
 function actualizarReloj() {
