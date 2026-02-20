@@ -38,7 +38,7 @@ function abrirModal(id) {
 
     document.getElementById('modal-cam-name').innerText = `DETALLE CAM_${String(id).padStart(3, '0')}`;
     const img = document.getElementById('modal-img');
-    img.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${id}?t=${new Date().getTime()}`;
+    img.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/GEOBILBAO_CamarasMunicipales/${id}?t=${new Date().getTime()}`;
 
     const distrito = getDistritoPorCamara(id);
     document.getElementById('modal-cam-data').innerText = `ID: ${id} - DISTRITO: ${distrito}`;
@@ -221,7 +221,7 @@ function generarGrilla() {
                 <span>SEGURA</span>
             </div>
             <div class="cam-feed">
-                <img id="img-cam-${id}" src="https://www.geobilbao.eus/geobilbao/api/cameraImage/${id}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMzAwIDIwMCI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwMDAiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIyMCIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U0lHTkFMIExPU1Q8L3RleHQ+PC9zdmc+'">
+                <img id="img-cam-${id}" src="https://www.geobilbao.eus/geobilbao/api/cameraImage/GEOBILBAO_CamarasMunicipales/${id}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMzAwIDIwMCI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwMDAiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIyMCIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U0lHTkFMIExPU1Q8L3RleHQ+PC9zdmc+'">
                 <div class="feed-overlay"><div class="rec-dot"></div> EN VIVO</div>
             </div>
             <div class="cam-footer">
@@ -242,14 +242,14 @@ function actualizarCamaras() {
     const images = document.querySelectorAll('.cam-feed img');
     images.forEach(img => {
         const id = img.id.replace('img-cam-', '');
-        img.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${id}?t=${timestamp}`;
+        img.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/GEOBILBAO_CamarasMunicipales/${id}?t=${timestamp}`;
     });
 
     // Update Modal Image if active
     if (currentModalId !== null) {
         const modalImg = document.getElementById('modal-img');
         if (modalImg) {
-            modalImg.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/${currentModalId}?t=${timestamp}`;
+            modalImg.src = `https://www.geobilbao.eus/geobilbao/api/cameraImage/GEOBILBAO_CamarasMunicipales/${currentModalId}?t=${timestamp}`;
         }
     }
 }
