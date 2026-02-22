@@ -265,6 +265,15 @@ body::before {
     padding: 10px;
 }
 
+.legal-box {
+    border: 1px solid var(--term-dim);
+    padding: 10px;
+    font-size: 11px;
+    color: var(--term-dim);
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
 .sidebar-folder h3 {
     margin: 0 0 10px 0;
     border-bottom: 1px solid var(--term-dim);
