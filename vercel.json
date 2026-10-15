@@ -1,4 +1,5 @@
 {
+  "outputDirectory": ".",
   "cleanUrls": true,
   "headers": [
     {
@@ -10,17 +11,16 @@
       ]
     }
   ],
-  "routes": [
+  "redirects": [
     {
-      "src": "/(src|scripts|node_modules)/(.*)",
-      "status": 404
+      "source": "/src/:match*",
+      "destination": "/",
+      "permanent": false
     },
     {
-      "src": "/(cameras_data\\.js|cameras\\.json|script\\.js|package\\.json|package-lock\\.json)",
-      "status": 404
-    },
-    {
-      "handle": "filesystem"
+      "source": "/scripts/:match*",
+      "destination": "/",
+      "permanent": false
     }
   ]
 }
