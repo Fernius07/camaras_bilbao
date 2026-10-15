@@ -50,38 +50,48 @@
     </div>
 
     <!-- DASHBOARD -->
-    <div id="dashboard">
-        <!-- Decoration corners -->
-        <div class="hud-corner tl"></div>
-        <div class="hud-corner tr"></div>
-        <div class="hud-corner bl"></div>
-        <div class="hud-corner br"></div>
-
         <div class="top-bar">
-            <div class="system-title">
-                <div class="shield-icon">🛡</div>
-                <span>CENTRO DE SEGURIDAD DE BILBAO</span>
+            <div class="top-bar-left">
+                <button id="btn-toggle-sidebar" class="btn-mobile-sidebar" onclick="toggleSidebarMobile()" aria-label="Abrir panel">
+                    <span>☰</span> <span class="btn-sidebar-label">DISTRITOS</span>
+                </button>
+                <div class="system-title">
+                    <div class="shield-icon">🛡</div>
+                    <span class="title-full">CENTRO DE SEGURIDAD DE BILBAO</span>
+                    <span class="title-short">BILBAO CCTV</span>
+                </div>
             </div>
 
             <!-- VIEW SELECTOR -->
             <div class="view-mode-selector">
                 <button id="btn-mode-map" class="btn-mode active" onclick="cambiarModoVista('map')">
-                    <span class="btn-icon">📡</span> MAPA TÁCTICO
+                    <span class="btn-icon">📡</span> <span class="btn-text">MAPA</span>
                 </button>
                 <button id="btn-mode-grid" class="btn-mode" onclick="cambiarModoVista('grid')">
-                    <span class="btn-icon">▦</span> MODO MATRIZ
+                    <span class="btn-icon">▦</span> <span class="btn-text">MATRIZ</span>
                 </button>
             </div>
 
             <div class="system-time">
-                <div style="font-size:10px; color:var(--term-dim);">ESTADO DEL SISTEMA</div>
-                <div style="color:var(--term-green);">● ACTIVO <span id="clock" style="color:white; margin-left:10px;">00:00:00</span></div>
+                <div class="system-status-pill">
+                    <span class="live-dot">●</span>
+                    <span class="live-label">ACTIVO</span>
+                    <span id="clock" class="clock-text">00:00:00</span>
+                </div>
             </div>
         </div>
 
         <div class="content-area">
+            <!-- BACKDROP FOR MOBILE SIDEBAR -->
+            <div id="sidebar-backdrop" class="sidebar-backdrop" onclick="toggleSidebarMobile()"></div>
+
             <!-- SIDEBAR -->
-            <div class="sidebar">
+            <div class="sidebar" id="sidebar-panel">
+                <div class="sidebar-header-mobile">
+                    <span>PANEL DE CONTROL</span>
+                    <button class="btn-close-sidebar" onclick="toggleSidebarMobile()">✕</button>
+                </div>
+
                 <div class="sidebar-folder">
                     <h3>LOCALIZADOR</h3>
                     <div class="search-box">
@@ -116,10 +126,9 @@
                 </div>
 
                 <div class="sidebar-folder">
-                    <h3>CONTROLES RADAR</h3>
+                    <h3>ACCIONES</h3>
                     <div class="radar-controls">
                         <button class="btn-sidebar-action" onclick="centrarBilbao()">⌖ CENTRAR BILBAO</button>
-                        <button class="btn-sidebar-action" id="btn-radar-toggle" onclick="toggleRadarSweep()">◉ RADAR: ACTIVO</button>
                     </div>
                 </div>
 
@@ -137,33 +146,19 @@
                     <div class="map-hud-bar">
                         <div class="hud-sector-tag">
                             <span class="radar-blip"></span>
-                            <span>SECTOR: BILBAO CENTRAL // MALLA TÁCTICA ACTIVA</span>
+                            <span class="hud-tag-full">SECTOR: BILBAO CENTRAL // MALLA ACTIVA</span>
+                            <span class="hud-tag-short">BILBAO CCTV</span>
                         </div>
                         <div class="hud-coords" id="hud-coordinates">
                             COORD: 43.26300° N, -2.93500° W
                         </div>
                         <div class="hud-stats-pill" id="hud-cam-pill">
-                            125 CÁMARAS MONITORIZADAS
+                            125 CÁMARAS
                         </div>
                     </div>
 
                     <!-- Map Container -->
                     <div id="tactical-map"></div>
-
-                    <!-- Radar Sweep Overlay -->
-                    <div id="radar-sweep-container" class="radar-sweep-overlay">
-                        <div class="radar-center-cross"></div>
-                        <div class="radar-circle circle-1"></div>
-                        <div class="radar-circle circle-2"></div>
-                        <div class="radar-circle circle-3"></div>
-                        <div class="radar-sweep-arm"></div>
-                    </div>
-
-                    <!-- Reticle Map Overlay Corners -->
-                    <div class="map-reticle-corner map-tl">+</div>
-                    <div class="map-reticle-corner map-tr">+</div>
-                    <div class="map-reticle-corner map-bl">+</div>
-                    <div class="map-reticle-corner map-br">+</div>
                 </div>
 
                 <!-- VIEW 2: GRID / MATRIX -->

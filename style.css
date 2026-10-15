@@ -21,6 +21,7 @@ body {
     color: var(--term-green);
     font-family: var(--font-stack);
     height: 100vh;
+    height: 100dvh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -190,53 +191,89 @@ body::before {
 }
 
 .top-bar {
-    height: 60px;
+    height: 52px;
     border-bottom: 2px solid var(--term-dim);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 20px;
-    background: rgba(0, 20, 0, 0.85);
+    padding: 0 16px;
+    background: rgba(0, 20, 0, 0.9);
     flex-shrink: 0;
-    gap: 15px;
+    gap: 10px;
     z-index: 10;
 }
 
-.system-title {
-    font-size: 18px;
-    font-weight: bold;
+.top-bar-left {
     display: flex;
     align-items: center;
     gap: 10px;
+    min-width: 0;
+}
+
+.btn-mobile-sidebar {
+    display: none;
+    background: rgba(0, 25, 0, 0.85);
+    border: 1px solid var(--term-green);
+    color: var(--term-green);
+    font-family: var(--font-stack);
+    font-size: 11px;
+    padding: 5px 8px;
+    cursor: pointer;
+    align-items: center;
+    gap: 4px;
+    border-radius: 2px;
+    white-space: nowrap;
+    transition: all 0.2s;
+}
+
+.btn-mobile-sidebar:hover {
+    background: var(--term-dim);
+    color: #fff;
+    box-shadow: 0 0 8px var(--term-green);
+}
+
+.system-title {
+    font-size: 16px;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.title-short {
+    display: none;
 }
 
 .shield-icon {
-    width: 24px;
-    height: 24px;
-    border: 2px solid var(--term-green);
+    width: 22px;
+    height: 22px;
+    border: 1.5px solid var(--term-green);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 13px;
+    font-size: 12px;
     box-shadow: 0 0 6px var(--term-glow);
+    flex-shrink: 0;
 }
 
 /* VIEW SELECTOR BUTTONS IN HEADER */
 .view-mode-selector {
     display: flex;
-    gap: 8px;
+    gap: 6px;
     background: rgba(0, 10, 0, 0.7);
     padding: 3px;
     border: 1px solid var(--term-dim);
+    flex-shrink: 0;
 }
 
 .btn-mode {
     background: transparent;
     color: var(--term-dim);
     border: 1px solid transparent;
-    padding: 6px 14px;
+    padding: 5px 12px;
     font-family: var(--font-stack);
     font-size: 12px;
     cursor: pointer;
@@ -245,7 +282,8 @@ body::before {
     transition: all 0.2s ease;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 5px;
+    white-space: nowrap;
 }
 
 .btn-mode .btn-icon {
@@ -265,9 +303,38 @@ body::before {
 }
 
 .system-time {
-    text-align: right;
-    font-size: 13px;
+    display: flex;
+    align-items: center;
     flex-shrink: 0;
+}
+
+.system-status-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    border: 1px solid var(--term-dim);
+    background: rgba(0, 15, 0, 0.7);
+    padding: 4px 10px;
+    font-size: 12px;
+    border-radius: 3px;
+    white-space: nowrap;
+}
+
+.live-dot {
+    color: var(--term-green);
+    animation: blink 1.5s infinite;
+    font-size: 9px;
+}
+
+.live-label {
+    color: var(--term-green);
+    font-size: 11px;
+}
+
+.clock-text {
+    color: #fff;
+    font-family: var(--font-stack);
+    letter-spacing: 0.5px;
 }
 
 .blink {
@@ -457,40 +524,50 @@ body::before {
 
 /* MAP HUD BAR */
 .map-hud-bar {
-    height: 38px;
-    background: rgba(0, 18, 0, 0.9);
+    height: 34px;
+    background: rgba(0, 18, 0, 0.92);
     border-bottom: 1px solid var(--term-dim);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 15px;
-    font-size: 12px;
+    padding: 0 14px;
+    font-size: 11px;
     color: var(--term-green);
     z-index: 10;
     flex-shrink: 0;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    white-space: nowrap;
+    overflow: hidden;
 }
 
 .hud-sector-tag {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
     font-size: 11px;
     color: var(--term-bright);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.hud-tag-short {
+    display: none;
 }
 
 .radar-blip {
-    width: 8px;
-    height: 8px;
+    width: 7px;
+    height: 7px;
     background: var(--term-green);
     border-radius: 50%;
     animation: radarBlipPulse 1.2s infinite;
     display: inline-block;
+    flex-shrink: 0;
 }
 
 @keyframes radarBlipPulse {
     0% { transform: scale(0.8); opacity: 1; box-shadow: 0 0 0 0 rgba(0, 255, 0, 0.7); }
-    70% { transform: scale(1.1); opacity: 0.8; box-shadow: 0 0 0 6px rgba(0, 255, 0, 0); }
+    70% { transform: scale(1.1); opacity: 0.8; box-shadow: 0 0 0 5px rgba(0, 255, 0, 0); }
     100% { transform: scale(0.8); opacity: 1; box-shadow: 0 0 0 0 rgba(0, 255, 0, 0); }
 }
 
@@ -498,14 +575,16 @@ body::before {
     color: var(--term-green);
     font-family: var(--font-stack);
     letter-spacing: 0.5px;
+    font-size: 11px;
 }
 
 .hud-stats-pill {
     border: 1px solid var(--term-dim);
-    padding: 3px 8px;
+    padding: 2px 8px;
     background: rgba(0, 30, 0, 0.6);
     font-size: 11px;
     color: var(--term-bright);
+    flex-shrink: 0;
 }
 
 /* TACTICAL MAP CONTAINER */
@@ -578,99 +657,7 @@ body::before {
     color: var(--term-dim) !important;
 }
 
-/* RADAR SWEEP EFFECT OVERLAY ON MAP */
-.radar-sweep-overlay {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 600px;
-    height: 600px;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 2;
-    border-radius: 50%;
-    transition: opacity 0.3s;
-}
 
-.radar-sweep-overlay.hidden {
-    opacity: 0;
-}
-
-.radar-center-cross {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 20px;
-    height: 20px;
-    transform: translate(-50%, -50%);
-}
-
-.radar-center-cross::before,
-.radar-center-cross::after {
-    content: "";
-    position: absolute;
-    background: var(--term-green);
-    opacity: 0.4;
-}
-
-.radar-center-cross::before {
-    top: 9px;
-    left: 0;
-    width: 20px;
-    height: 2px;
-}
-
-.radar-center-cross::after {
-    top: 0;
-    left: 9px;
-    width: 2px;
-    height: 20px;
-}
-
-.radar-circle {
-    position: absolute;
-    border: 1px dashed rgba(0, 255, 0, 0.18);
-    border-radius: 50%;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-.circle-1 { width: 180px; height: 180px; }
-.circle-2 { width: 360px; height: 360px; }
-.circle-3 { width: 540px; height: 540px; border-style: solid; border-color: rgba(0, 255, 0, 0.1); }
-
-.radar-sweep-arm {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 270px;
-    height: 270px;
-    transform-origin: top left;
-    background: conic-gradient(from 0deg, rgba(0, 255, 0, 0.25) 0deg, rgba(0, 255, 0, 0.08) 35deg, transparent 60deg);
-    border-radius: 100% 0 0 0;
-    animation: radarSweepRotate 6s infinite linear;
-    pointer-events: none;
-}
-
-@keyframes radarSweepRotate {
-    from { transform: rotate(0deg); }
-    to { transform: rotate(360deg); }
-}
-
-/* RETICLE CORNERS ON MAP */
-.map-reticle-corner {
-    position: absolute;
-    font-size: 16px;
-    color: var(--term-dim);
-    pointer-events: none;
-    z-index: 3;
-}
-
-.map-tl { top: 48px; left: 10px; }
-.map-tr { top: 48px; right: 10px; }
-.map-bl { bottom: 10px; left: 10px; }
-.map-br { bottom: 10px; right: 10px; }
 
 /* TACTICAL CAMERA MARKER ON MAP */
 .tactical-cam-marker {
@@ -963,20 +950,7 @@ body::before {
     animation: blink 1s infinite;
 }
 
-/* HUD CORNERS IN DASHBOARD */
-.hud-corner {
-    position: absolute;
-    width: 40px;
-    height: 40px;
-    border: 2px solid var(--term-dim);
-    pointer-events: none;
-    z-index: 50;
-}
 
-.tl { top: 15px; left: 15px; border-right: 0; border-bottom: 0; }
-.tr { top: 15px; right: 15px; border-left: 0; border-bottom: 0; }
-.bl { bottom: 15px; left: 15px; border-right: 0; border-top: 0; }
-.br { bottom: 15px; right: 15px; border-left: 0; border-top: 0; }
 
 /* ============================================================
    --- CAMERA MODAL: APERTURE SHUTTER & VIEWFINDER ANIMATIONS ---
@@ -1376,31 +1350,208 @@ body::before {
     background: var(--term-green);
 }
 
-/* RESPONSIVE DESIGN */
-@media (max-width: 900px) {
-    .sidebar {
-        display: none;
-    }
+/* MOBILE DRAWER BACKDROP & HEADER */
+.sidebar-backdrop {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 990;
+    backdrop-filter: blur(2px);
+}
 
+.sidebar-backdrop.active {
+    display: block;
+}
+
+.sidebar-header-mobile {
+    display: none;
+}
+
+/* RESPONSIVE DESIGN (MOBILE & TABLET) */
+@media (max-width: 800px) {
+    /* Top bar adjustments */
     .top-bar {
-        padding: 0 10px;
+        padding: 0 8px;
+        height: 48px;
+        gap: 6px;
     }
 
-    .system-title span {
+    .btn-mobile-sidebar {
+        display: flex;
+    }
+
+    .title-full {
         display: none;
     }
 
+    .title-short {
+        display: inline-block;
+        font-size: 13px;
+    }
+
+    .view-mode-selector {
+        padding: 2px;
+        gap: 4px;
+    }
+
+    .btn-mode {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+
+    .system-status-pill {
+        padding: 3px 6px;
+        font-size: 11px;
+    }
+
+    .live-label {
+        display: none;
+    }
+
+    /* Map HUD Bar on mobile */
+    .map-hud-bar {
+        height: 32px;
+        padding: 0 8px;
+        font-size: 10.5px;
+    }
+
+    .hud-tag-full {
+        display: none;
+    }
+
+    .hud-tag-short {
+        display: inline;
+    }
+
+    .hud-coords {
+        display: none; /* Hide long coordinates on mobile to prevent overflow */
+    }
+
+    .hud-stats-pill {
+        padding: 1px 6px;
+        font-size: 10px;
+    }
+
+    /* Mobile Slide-Out Sidebar Drawer */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 280px;
+        max-width: 85vw;
+        height: 100%;
+        height: 100dvh;
+        background: rgba(0, 15, 0, 0.98);
+        border-right: 2px solid var(--term-green);
+        box-shadow: 5px 0 25px rgba(0, 0, 0, 0.9);
+        z-index: 1000;
+        transform: translateX(-100%);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        display: flex;
+    }
+
+    .sidebar.mobile-open {
+        transform: translateX(0);
+    }
+
+    .sidebar-header-mobile {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid var(--term-green);
+        padding-bottom: 8px;
+        margin-bottom: 5px;
+        font-size: 12px;
+        color: var(--term-green);
+    }
+
+    .btn-close-sidebar {
+        background: transparent;
+        border: 1px solid var(--term-dim);
+        color: var(--term-green);
+        font-family: var(--font-stack);
+        font-size: 14px;
+        padding: 2px 8px;
+        cursor: pointer;
+    }
+
+    /* Markers on Mobile: Hide overlapping text badge labels */
+    .marker-badge {
+        display: none !important;
+    }
+
+    .tactical-cam-marker {
+        width: 26px;
+        height: 26px;
+    }
+
+    .marker-reticle {
+        width: 22px;
+        height: 22px;
+    }
+
+    .marker-reticle svg {
+        width: 13px;
+        height: 13px;
+    }
+
+    .marker-ping {
+        top: -3px;
+        left: -3px;
+        width: 30px;
+        height: 30px;
+    }
+
+    /* Modal adjustments on mobile */
     .modal-content {
-        width: 96%;
+        width: 95%;
+        max-width: 95%;
+        max-height: 94vh;
+    }
+
+    .modal-header {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+
+    .cam-title-group {
+        gap: 6px;
+        overflow: hidden;
+    }
+
+    #modal-cam-name {
+        font-size: 12px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
     }
 
     .modal-footer {
         flex-direction: column;
-        align-items: flex-start;
+        align-items: stretch;
+        padding: 8px 10px;
+        gap: 8px;
+    }
+
+    .footer-data-group {
+        font-size: 10px;
     }
 
     .modal-controls {
+        display: flex;
         width: 100%;
         justify-content: space-between;
+        gap: 4px;
+    }
+
+    .btn-modal-action {
+        flex: 1;
+        text-align: center;
+        padding: 6px 2px;
+        font-size: 10px;
     }
 }

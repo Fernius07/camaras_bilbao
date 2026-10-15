@@ -12,7 +12,6 @@ let modalRefreshInterval = null;
 let modalProgressInterval = null;
 let modalClockInterval = null;
 let currentZoomLevel = 1;
-let radarSweepActive = true;
 let currentTileLayer = 'osm-dark';
 const tileLayers = {};
 
@@ -649,6 +648,16 @@ function cargarDistrito(nombre) {
 
     actualizarContadorCamarasVisibles();
 
+    // Close mobile drawer if open
+    if (window.innerWidth <= 800) {
+        const sidebar = document.getElementById('sidebar-panel');
+        const backdrop = document.getElementById('sidebar-backdrop');
+        if (sidebar && sidebar.classList.contains('mobile-open')) {
+            sidebar.classList.remove('mobile-open');
+            if (backdrop) backdrop.classList.remove('active');
+        }
+    }
+
     // If currently in grid view, refresh cards
     if (currentView === 'grid') {
         generarGrilla();
@@ -743,19 +752,16 @@ function centrarBilbao() {
     }
 }
 
-function toggleRadarSweep() {
-    sfx.beep();
-    radarSweepActive = !radarSweepActive;
-    const overlay = document.getElementById('radar-sweep-container');
-    const btn = document.getElementById('btn-radar-toggle');
+// --- MOBILE SIDEBAR DRAWER TOGGLE ---
 
-    if (radarSweepActive) {
-        if (overlay) overlay.classList.remove('hidden');
-        if (btn) btn.innerText = "◉ RADAR: ACTIVO";
-    } else {
-        if (overlay) overlay.classList.add('hidden');
-        if (btn) btn.innerText = "○ RADAR: INACTIVO";
-    }
+function toggleSidebarMobile() {
+    sfx.beep();
+    const sidebar = document.getElementById('sidebar-panel');
+    const backdrop = document.getElementById('sidebar-backdrop');
+    if (!sidebar) return;
+
+    sidebar.classList.toggle('mobile-open');
+    if (backdrop) backdrop.classList.toggle('active');
 }
 
 // --- GRID VIEW GENERATION (MODO MATRIZ) ---
