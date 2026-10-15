@@ -195,23 +195,38 @@ async function iniciarSecuenciaLogin() {
 
     setTimeout(() => {
         const loginScreen = document.getElementById('login-screen');
-        loginScreen.style.opacity = '0';
-        loginScreen.style.transition = 'opacity 0.8s';
+        if (loginScreen) {
+            loginScreen.style.opacity = '0';
+            loginScreen.style.pointerEvents = 'none';
+            loginScreen.style.transition = 'opacity 0.8s';
+        }
 
         setTimeout(() => {
-            loginScreen.style.display = 'none';
+            if (loginScreen) loginScreen.style.display = 'none';
             const dashboard = document.getElementById('dashboard');
-            dashboard.style.display = 'flex';
+            if (dashboard) dashboard.style.display = 'flex';
 
             // Start system directly on tactical map!
             iniciarSistemaCamaras();
+            if (map) {
+                setTimeout(() => map.invalidateSize(), 50);
+            }
         }, 800);
     }, 600);
 }
 
 // --- DASHBOARD & SYSTEM INITIALIZATION ---
+let sistemaIniciado = false;
+let relojInterval = null;
 
 function iniciarSistemaCamaras() {
+    if (sistemaIniciado) {
+        if (map) {
+            setTimeout(() => map.invalidateSize(), 50);
+        }
+        return;
+    }
+    sistemaIniciado = true;
     console.log("Sistema de cámaras y radar iniciado.");
     generarSidebar();
     
@@ -220,7 +235,9 @@ function iniciarSistemaCamaras() {
 
     // Start Realtime System Clock
     actualizarReloj();
-    setInterval(actualizarReloj, 1000);
+    if (!relojInterval) {
+        relojInterval = setInterval(actualizarReloj, 1000);
+    }
 
     // Initial district set to TODO
     cargarDistrito("TODO");
@@ -810,4 +827,11 @@ function actualizarReloj() {
     if (clockEl) {
         clockEl.innerText = now.toLocaleTimeString('es-ES');
     }
+}
+
+// Auto-initialize system on page load so districts and tactical map render in the background behind the login overlay
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', iniciarSistemaCamaras);
+} else {
+    iniciarSistemaCamaras();
 }
