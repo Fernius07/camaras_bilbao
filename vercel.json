@@ -1,0 +1,26 @@
+{
+  "cleanUrls": true,
+  "headers": [
+    {
+      "source": "/(.*)",
+      "headers": [
+        { "key": "X-Frame-Options", "value": "SAMEORIGIN" },
+        { "key": "X-Content-Type-Options", "value": "nosniff" },
+        { "key": "Referrer-Policy", "value": "strict-origin-when-cross-origin" }
+      ]
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(src|scripts|node_modules)/(.*)",
+      "status": 404
+    },
+    {
+      "src": "/(cameras_data\\.js|cameras\\.json|script\\.js|package\\.json|package-lock\\.json)",
+      "status": 404
+    },
+    {
+      "handle": "filesystem"
+    }
+  ]
+}

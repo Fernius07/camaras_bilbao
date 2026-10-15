@@ -1556,3 +1556,154 @@ body::before {
         font-size: 10px;
     }
 }
+
+/* --- TACTICAL SECURITY & ANTI-INSPECTION HUD --- */
+
+/* Prevent text highlighting/scraping */
+body, button, .menu-item, .cam-card, .sidebar, .top-bar, .modal-content {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+}
+
+/* Allow text input only in search box */
+input, textarea {
+    -webkit-user-select: text !important;
+    user-select: text !important;
+}
+
+/* Toast HUD notification on unauthorized hotkey or right-click */
+.security-hud-toast {
+    position: fixed;
+    top: -80px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999999;
+    transition: top 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    pointer-events: none;
+}
+
+.security-hud-toast.visible {
+    top: 20px;
+}
+
+.security-hud-toast .toast-inner {
+    background: rgba(20, 0, 0, 0.95);
+    border: 2px solid var(--alert-red);
+    box-shadow: 0 0 25px rgba(255, 51, 51, 0.6), inset 0 0 10px rgba(255, 51, 51, 0.3);
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+    border-radius: 4px;
+}
+
+.security-hud-toast .toast-badge {
+    font-size: 10px;
+    color: var(--alert-red);
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+.security-hud-toast .toast-msg {
+    font-size: 13px;
+    color: #fff;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+
+/* Fullscreen lockdown overlay when DevTools is opened */
+.devtools-lockdown-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(5, 0, 0, 0.98);
+    z-index: 9999999;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(12px);
+}
+
+.lockdown-box {
+    background: rgba(15, 3, 3, 0.96);
+    border: 3px solid var(--alert-red);
+    box-shadow: 0 0 40px rgba(255, 51, 51, 0.7), inset 0 0 30px rgba(255, 0, 0, 0.3);
+    max-width: 620px;
+    width: 100%;
+    padding: 30px;
+    text-align: center;
+    position: relative;
+    border-radius: 4px;
+}
+
+.lockdown-box::before {
+    content: "";
+    position: absolute;
+    top: -6px;
+    left: -6px;
+    right: -6px;
+    bottom: -6px;
+    border: 1px dashed rgba(255, 51, 51, 0.5);
+    pointer-events: none;
+}
+
+.lockdown-header {
+    border-bottom: 1px solid rgba(255, 51, 51, 0.4);
+    padding-bottom: 15px;
+    margin-bottom: 18px;
+}
+
+.lockdown-badge {
+    font-size: 11px;
+    color: var(--alert-red);
+    letter-spacing: 2px;
+}
+
+.lockdown-title {
+    font-size: 18px;
+    color: #ff4444;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    margin-top: 6px;
+    text-shadow: 0 0 10px rgba(255, 51, 51, 0.8);
+}
+
+.lockdown-body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: #ccc;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.lockdown-p {
+    margin: 0;
+}
+
+.warning-highlight {
+    color: #ff9999;
+    background: rgba(255, 0, 0, 0.12);
+    padding: 8px 12px;
+    border-left: 3px solid var(--alert-red);
+    text-align: left;
+    font-size: 12px;
+}
+
+.lockdown-footer {
+    border-top: 1px solid rgba(255, 51, 51, 0.4);
+    padding-top: 15px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    color: #888;
+    letter-spacing: 1px;
+}

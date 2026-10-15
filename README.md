@@ -75,6 +75,21 @@ python -m http.server 8000
 1. Pulsa en **"INICIAR SESIÓN"** para ver la secuencia de acceso táctica.
 2. Explora el mapa de Bilbao y haz clic en cualquiera de las 125 cámaras para abrir su señal con la animación de obturador.
 
+### 🔒 Blindaje y Compilación (Anti-Inspección)
+
+El código fuente de desarrollo se encuentra organizado en la carpeta `src/`. Para compilar y generar el bundle de producción ofuscado:
+
+```bash
+npm install
+npm run build
+```
+
+Esto generará automáticamente `app.bundle.js` con:
+* **Cifrado de cadenas con RC4** (nombres de cámaras, URLs, coordenadas y lógica ilegibles).
+* **Bloqueo activo de F12, DevTools, atajos de inspección y clic derecho**.
+* **Trampa anti-depurador (Anti-Debugger Loop)** y pantalla de bloqueo si se detectan herramientas de inspección abiertas.
+* **Autodefensa contra formateo (*pretty-print*)**.
+
 ---
 
 ## 📄 Licencia
