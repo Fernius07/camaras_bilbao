@@ -5,10 +5,13 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>SISTEMA DE CÁMARAS - BILBAO</title>
-    <!-- Importing a tech-looking font -->
+    <!-- Tech font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&display=swap" rel="stylesheet">
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="vendor/leaflet/leaflet.css">
 
     <!-- External CSS -->
     <link rel="stylesheet" href="style.css">
@@ -22,22 +25,19 @@
     <div id="login-screen">
         <div class="login-panel">
             <div class="login-header">
-                <div style="font-size: 12px; color: var(--term-dim); margin-bottom: 5px;">SISTEMA SEGURIDAD MUNICIPAL
-                </div>
+                <div style="font-size: 12px; color: var(--term-dim); margin-bottom: 5px;">SISTEMA SEGURIDAD MUNICIPAL</div>
                 ACCESO CONTROLADO
             </div>
 
             <div class="login-form">
                 <div class="input-group">
                     <span class="input-label">IDENTIDAD DE USUARIO</span>
-                    <div class="fake-input" id="user-input"><span class="cursor" id="cursor-user"
-                            style="display:none"></span></div>
+                    <div class="fake-input" id="user-input"><span class="cursor" id="cursor-user" style="display:none"></span></div>
                 </div>
 
                 <div class="input-group">
                     <span class="input-label">CLAVE DE ACCESO (ENCRIPTADA)</span>
-                    <div class="fake-input" id="pass-input"><span class="cursor" id="cursor-pass"
-                            style="display:none"></span></div>
+                    <div class="fake-input" id="pass-input"><span class="cursor" id="cursor-pass" style="display:none"></span></div>
                 </div>
 
                 <div class="status-log" id="status-log">
@@ -60,29 +60,58 @@
         <div class="top-bar">
             <div class="system-title">
                 <div class="shield-icon">🛡</div>
-                CENTRO DE SEGURIDAD DE BILBAO
+                <span>CENTRO DE SEGURIDAD DE BILBAO</span>
             </div>
+
+            <!-- VIEW SELECTOR -->
+            <div class="view-mode-selector">
+                <button id="btn-mode-map" class="btn-mode active" onclick="cambiarModoVista('map')">
+                    <span class="btn-icon">📡</span> MAPA TÁCTICO
+                </button>
+                <button id="btn-mode-grid" class="btn-mode" onclick="cambiarModoVista('grid')">
+                    <span class="btn-icon">▦</span> MODO MATRIZ
+                </button>
+            </div>
+
             <div class="system-time">
                 <div style="font-size:10px; color:var(--term-dim);">ESTADO DEL SISTEMA</div>
-                <div style="color:var(--term-green);">● ACTIVO <span id="clock"
-                        style="color:white; margin-left:10px;">00:00:00</span></div>
+                <div style="color:var(--term-green);">● ACTIVO <span id="clock" style="color:white; margin-left:10px;">00:00:00</span></div>
             </div>
         </div>
 
         <div class="content-area">
+            <!-- SIDEBAR -->
             <div class="sidebar">
+                <div class="sidebar-folder">
+                    <h3>LOCALIZADOR</h3>
+                    <div class="search-box">
+                        <input type="text" id="camera-search" placeholder="BUSCAR CALLE O ID..." oninput="filtrarPorTexto(this.value)">
+                        <button id="btn-clear-search" onclick="limpiarBusqueda()">×</button>
+                    </div>
+                </div>
+
                 <div class="sidebar-folder">
                     <h3>DISTRITOS</h3>
                     <div id="district-list">
                         <!-- Populated by JS -->
                     </div>
                 </div>
+
                 <div class="sidebar-folder">
                     <h3>ESTADÍSTICAS</h3>
-                    <div style="font-size: 12px; color: var(--term-bright);">
-                        CPU LOAD: 24%<br>
-                        NET DO: 1.4 GB/s<br>
-                        ACTIVE FEEDS: <span id="feed-count">0</span>
+                    <div class="stats-content">
+                        <div>CPU LOAD: <span style="color:var(--term-green);">24%</span></div>
+                        <div>NET DO: <span style="color:var(--term-green);">1.4 GB/s</span></div>
+                        <div>CÁMARAS: <span id="feed-count">125 / 125</span></div>
+                        <div>VISTA: <span id="current-view-name">MAPA TÁCTICO</span></div>
+                    </div>
+                </div>
+
+                <div class="sidebar-folder">
+                    <h3>CONTROLES RADAR</h3>
+                    <div class="radar-controls">
+                        <button class="btn-sidebar-action" onclick="centrarBilbao()">⌖ CENTRAR BILBAO</button>
+                        <button class="btn-sidebar-action" id="btn-radar-toggle" onclick="toggleRadarSweep()">◉ RADAR: ACTIVO</button>
                     </div>
                 </div>
 
@@ -93,36 +122,153 @@
                 </div>
             </div>
 
-            <div class="cameras-container">
-                <div class="grid-layout" id="tablaCamaras">
-                    <!-- Javascript will populate this -->
+            <!-- MAIN VIEW CONTAINER -->
+            <div class="main-viewport">
+                <!-- VIEW 1: TACTICAL MAP (DEFAULT) -->
+                <div id="view-map" class="viewport-section active">
+                    <div class="map-hud-bar">
+                        <div class="hud-sector-tag">
+                            <span class="radar-blip"></span>
+                            <span>SECTOR: BILBAO CENTRAL // MALLA TÁCTICA ACTIVA</span>
+                        </div>
+                        <div class="hud-coords" id="hud-coordinates">
+                            COORD: 43.26300° N, -2.93500° W
+                        </div>
+                        <div class="hud-stats-pill" id="hud-cam-pill">
+                            125 CÁMARAS MONITORIZADAS
+                        </div>
+                    </div>
+
+                    <!-- Map Container -->
+                    <div id="tactical-map"></div>
+
+                    <!-- Radar Sweep Overlay -->
+                    <div id="radar-sweep-container" class="radar-sweep-overlay">
+                        <div class="radar-center-cross"></div>
+                        <div class="radar-circle circle-1"></div>
+                        <div class="radar-circle circle-2"></div>
+                        <div class="radar-circle circle-3"></div>
+                        <div class="radar-sweep-arm"></div>
+                    </div>
+
+                    <!-- Reticle Map Overlay Corners -->
+                    <div class="map-reticle-corner map-tl">+</div>
+                    <div class="map-reticle-corner map-tr">+</div>
+                    <div class="map-reticle-corner map-bl">+</div>
+                    <div class="map-reticle-corner map-br">+</div>
+                </div>
+
+                <!-- VIEW 2: GRID / MATRIX -->
+                <div id="view-grid" class="viewport-section">
+                    <div class="cameras-container">
+                        <div class="grid-layout" id="tablaCamaras">
+                            <!-- Populated by JS if grid mode is selected -->
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- MODAL DETALLE CÁMARA -->
-    <div id="camera-modal" class="modal-overlay">
-        <div class="modal-content">
+    <!-- MODAL DETALLE CÁMARA (APERTURE SHUTTER ANIMATION) -->
+    <div id="camera-modal" class="modal-overlay" onclick="handleBackdropClick(event)">
+        <!-- Mechanical Iris Shutter Blades Overlay -->
+        <div class="iris-shutter" id="iris-shutter">
+            <div class="iris-blade blade-1"></div>
+            <div class="iris-blade blade-2"></div>
+            <div class="iris-blade blade-3"></div>
+            <div class="iris-blade blade-4"></div>
+            <div class="iris-blade blade-5"></div>
+            <div class="iris-blade blade-6"></div>
+            <div class="iris-lens-ring"></div>
+        </div>
+
+        <!-- Lens Flare / Flash -->
+        <div class="lens-flash" id="lens-flash"></div>
+
+        <!-- Camera Screen Viewfinder -->
+        <div class="modal-content" id="modal-content-box">
+            <!-- Focus Lock Brackets -->
+            <div class="viewfinder-bracket vf-tl"></div>
+            <div class="viewfinder-bracket vf-tr"></div>
+            <div class="viewfinder-bracket vf-bl"></div>
+            <div class="viewfinder-bracket vf-br"></div>
+
             <div class="modal-header">
-                <span id="modal-cam-name">DETALLE CÁMARA</span>
-                <button class="modal-close" onclick="cerrarModal()">[ X ]</button>
+                <div class="cam-title-group">
+                    <span class="rec-dot"></span>
+                    <span id="modal-cam-name">DETALLE CÁMARA</span>
+                    <span id="modal-district-badge" class="badge-district">ABANDO</span>
+                </div>
+                <button class="modal-close" onclick="cerrarModal()" title="Cerrar señal">[ DESCONECTAR ✕ ]</button>
             </div>
+
             <div class="modal-body">
-                <img id="modal-img" src="" alt="Vista detallada">
+                <!-- Optical Center Crosshair -->
+                <div class="optical-crosshair"></div>
+                <div class="rule-of-thirds"></div>
+
+                <!-- Live Image -->
+                <img id="modal-img" src="" alt="Señal en vivo">
+                
+                <!-- Frame Flash on Refresh -->
+                <div class="frame-refresh-flash" id="frame-refresh-flash"></div>
+
+                <!-- CRT Scanlines -->
                 <div class="modal-scanline"></div>
+
+                <!-- Top Left OSD: REC & Realtime Clock -->
                 <div class="feed-overlay">
-                    <div class="rec-dot"></div> EN VIVO
+                    <div class="rec-dot"></div>
+                    <span>EN VIVO</span>
+                    <span id="modal-live-clock" style="margin-left: 8px; color: #fff;">00:00:00.000</span>
+                </div>
+
+                <!-- Top Right OSD: Telemetry -->
+                <div class="telemetry-overlay">
+                    <span>1080p HD // 30 FPS</span>
+                    <span style="color:var(--term-green);">SEÑAL ESTABLE 99.8%</span>
+                </div>
+
+                <!-- Bottom Refresh Countdown Bar -->
+                <div class="refresh-bar-container">
+                    <div class="refresh-bar-label">
+                        <span>ACTUALIZACIÓN AUTOMÁTICA</span>
+                        <span id="refresh-countdown-text">3.5s</span>
+                    </div>
+                    <div class="refresh-progress-track">
+                        <div class="refresh-progress-bar" id="refresh-progress-bar"></div>
+                    </div>
                 </div>
             </div>
+
             <div class="modal-footer">
-                <span id="modal-cam-data">COORDENADAS: 43.26N, 2.93W</span>
-                <span>RESOLUCIÓN: 1080p ENLACE SEGURO</span>
+                <div class="footer-data-group">
+                    <span id="modal-cam-data">ID: -- | COORDENADAS: --</span>
+                    <span class="source-tag">GEOBILBAO AYTO. BILBAO // ENLACE SEGURO</span>
+                </div>
+                <div class="modal-controls">
+                    <button class="btn-modal-action" onclick="forzarRefrescoCamara()" title="Forzar captura inmediata">
+                        ⟳ REFRESCAR
+                    </button>
+                    <button class="btn-modal-action" id="btn-zoom-toggle" onclick="toggleZoomModal()" title="Zoom óptico 1x / 1.5x / 2x">
+                        🔍 ZOOM: <span id="zoom-level-text">1X</span>
+                    </button>
+                    <button class="btn-modal-action" onclick="cerrarModal()" title="Cerrar señal">
+                        ✕ CERRAR
+                    </button>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- External JS -->
+    <!-- Leaflet JS -->
+    <script src="vendor/leaflet/leaflet.js"></script>
+
+    <!-- Cameras Database -->
+    <script src="cameras_data.js"></script>
+
+    <!-- Main Logic -->
     <script src="script.js"></script>
 
     <!-- Vercel Speed Insights -->
