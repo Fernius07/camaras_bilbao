@@ -54,7 +54,7 @@ Sistema interactivo de visualización y monitorización de las cámaras de tráf
 - **HTML5 & CSS3 Avanzado**: Animaciones `clip-path`, transformaciones 3D, filtros SVG/CRT, maquetación Flexbox y Grid.
 - **JavaScript Moderno (ES6+)**: Lógica asíncrona, control de intervalos, precarga de imágenes.
 - **Leaflet.js**: Motor cartográfico ligero integrado localmente en `vendor/leaflet/`.
-- **CartoDB Dark Matter**: Teselas cartográficas vectoriales en modo oscuro.
+- **OpenStreetMap & Esri World Imagery (100% Libres, Sin API Key)**: Callejero táctico oscuro y satélite militar de alta resolución sin marcas de agua ni límites de clave.
 - **Web Audio API**: Síntesis nativa de audio en el navegador (no requiere archivos externos de audio .mp3/.wav).
 - **Bilbao Open Data & GeoBilbao API**: Datos geográficos y transmisiones oficiales del Ayuntamiento de Bilbao.
 

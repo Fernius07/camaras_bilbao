@@ -13,6 +13,8 @@ let modalProgressInterval = null;
 let modalClockInterval = null;
 let currentZoomLevel = 1;
 let radarSweepActive = true;
+let currentTileLayer = 'osm-dark';
+const tileLayers = {};
 
 // Ensure database availability
 const CAMERAS = (typeof BILBAO_CAMERAS !== 'undefined' && Array.isArray(BILBAO_CAMERAS)) ? BILBAO_CAMERAS : [];
@@ -246,13 +248,22 @@ function initTacticalMap() {
         attributionControl: true
     });
 
-    // Dark Matter tile layer with tactical green CRT filter
-    const darkTileLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-        attribution: '&copy; OpenStreetMap &copy; CARTO | GeoBilbao',
-        subdomains: 'abcd',
+    // 100% Free OpenStreetMap Dark Tactical Tile Layer (NO API KEY REQUIRED)
+    tileLayers['osm-dark'] = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors | GeoBilbao',
         maxZoom: 19,
         className: 'tactical-tiles'
-    }).addTo(map);
+    });
+
+    // 100% Free Esri Satellite Tactical Layer (NO API KEY REQUIRED)
+    tileLayers['satellite'] = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '&copy; Esri, Maxar | GeoBilbao',
+        maxZoom: 19,
+        className: 'satellite-tiles'
+    });
+
+    // Default to OpenStreetMap Dark Tactical
+    tileLayers['osm-dark'].addTo(map);
 
     // Track mouse coordinates on map for HUD readout
     map.on('mousemove', (e) => {
@@ -695,6 +706,32 @@ function actualizarContadorCamarasVisibles() {
 
     const pillEl = document.getElementById('hud-cam-pill');
     if (pillEl) pillEl.innerText = `${count} CÁMARAS MONITORIZADAS`;
+}
+
+// --- TACTICAL LAYER SELECTOR (NO API KEY REQUIRED) ---
+
+function cambiarCapaMapa(tipo) {
+    sfx.beep();
+    if (!map || !tileLayers[tipo]) return;
+
+    Object.values(tileLayers).forEach(layer => {
+        if (map.hasLayer(layer)) map.removeLayer(layer);
+    });
+
+    tileLayers[tipo].addTo(map);
+    currentTileLayer = tipo;
+
+    const btnOsm = document.getElementById('btn-layer-osm');
+    const btnSat = document.getElementById('btn-layer-sat');
+    if (btnOsm && btnSat) {
+        if (tipo === 'osm-dark') {
+            btnOsm.classList.add('active');
+            btnSat.classList.remove('active');
+        } else {
+            btnSat.classList.add('active');
+            btnOsm.classList.remove('active');
+        }
+    }
 }
 
 // --- RADAR CONTROLS ---
