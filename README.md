@@ -2,7 +2,7 @@
 
 Sistema interactivo de visualización y monitorización de las cámaras de tráfico del Ayuntamiento de Bilbao (GeoBilbao / Open Data Euskadi), ambientado con una interfaz táctica/ciberpunk tipo centro de mando de seguridad municipal.
 
-![Licencia](https://img.shields.io/badge/licencia-MIT-green.svg)
+![Licencia](https://img.shields.io/badge/licencia-Solo%20Lectura%20(All%20Rights%20Reserved)-red.svg)
 ![Estado](https://img.shields.io/badge/estado-activo-brightgreen.svg)
 ![Cámaras](https://img.shields.io/badge/cámaras%20monitorizadas-125-00ff00.svg)
 
@@ -74,3 +74,14 @@ python -m http.server 8000
 
 1. Pulsa en **"INICIAR SESIÓN"** para ver la secuencia de acceso táctica.
 2. Explora el mapa de Bilbao y haz clic en cualquiera de las 125 cámaras para abrir su señal con la animación de obturador.
+
+---
+
+## 📄 Licencia
+
+Este proyecto está bajo una licencia de **Visualización Exclusiva (All Rights Reserved)**.
+
+- **Permitido**: Visualizar y leer el código fuente para fines informativos y de inspección en este repositorio de GitHub.
+- **Prohibido**: Replicar, clonar para redistribución, editar, modificar, sublicenciar o utilizar este código (total o parcialmente) para proyectos propios, comerciales o de terceros.
+
+Para más detalles, consulta el archivo [LICENSE](LICENSE).
