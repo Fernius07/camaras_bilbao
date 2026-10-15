@@ -988,14 +988,13 @@ body::before {
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(2, 6, 2, 0.92);
+    background: rgba(2, 6, 2, 0.88);
     display: none;
     align-items: center;
     justify-content: center;
     z-index: 2000;
-    backdrop-filter: blur(8px);
     opacity: 0;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.22s ease;
 }
 
 .modal-overlay.active {
@@ -1003,167 +1002,98 @@ body::before {
     opacity: 1;
 }
 
-/* MECHANICAL IRIS SHUTTER OVERLAY */
-.iris-shutter {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 140vmax;
-    height: 140vmax;
-    transform: translate(-50%, -50%);
-    pointer-events: none;
-    z-index: 2005;
-    overflow: hidden;
-    opacity: 0;
-}
-
-.modal-overlay.opening .iris-shutter,
-.modal-overlay.closing .iris-shutter {
-    opacity: 1;
-}
-
-.iris-blade {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 70vmax;
-    height: 70vmax;
-    background: linear-gradient(135deg, #011201 0%, #002500 50%, #001000 100%);
-    border: 1px solid var(--term-green);
-    box-shadow: 0 0 15px rgba(0, 255, 0, 0.4);
-    transform-origin: 0% 0%;
-    transition: transform 0.45s cubic-bezier(0.19, 1, 0.22, 1);
-    clip-path: polygon(0 0, 100% 0, 60% 100%, 0 40%);
-}
-
-.blade-1 { transform: rotate(0deg) translate(0, 0); }
-.blade-2 { transform: rotate(60deg) translate(0, 0); }
-.blade-3 { transform: rotate(120deg) translate(0, 0); }
-.blade-4 { transform: rotate(180deg) translate(0, 0); }
-.blade-5 { transform: rotate(240deg) translate(0, 0); }
-.blade-6 { transform: rotate(300deg) translate(0, 0); }
-
-/* WHEN OPENING: SHUTTER BLADES RETRACT OUTWARD */
-.modal-overlay.opening .blade-1 { animation: bladeOpen1 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-.modal-overlay.opening .blade-2 { animation: bladeOpen2 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-.modal-overlay.opening .blade-3 { animation: bladeOpen3 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-.modal-overlay.opening .blade-4 { animation: bladeOpen4 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-.modal-overlay.opening .blade-5 { animation: bladeOpen5 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-.modal-overlay.opening .blade-6 { animation: bladeOpen6 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-
-@keyframes bladeOpen1 { from { transform: rotate(0deg) translate(0, 0); } to { transform: rotate(50deg) translate(30vmax, -20vmax); } }
-@keyframes bladeOpen2 { from { transform: rotate(60deg) translate(0, 0); } to { transform: rotate(110deg) translate(30vmax, -20vmax); } }
-@keyframes bladeOpen3 { from { transform: rotate(120deg) translate(0, 0); } to { transform: rotate(170deg) translate(30vmax, -20vmax); } }
-@keyframes bladeOpen4 { from { transform: rotate(180deg) translate(0, 0); } to { transform: rotate(230deg) translate(30vmax, -20vmax); } }
-@keyframes bladeOpen5 { from { transform: rotate(240deg) translate(0, 0); } to { transform: rotate(290deg) translate(30vmax, -20vmax); } }
-@keyframes bladeOpen6 { from { transform: rotate(300deg) translate(0, 0); } to { transform: rotate(350deg) translate(30vmax, -20vmax); } }
-
-/* WHEN CLOSING: SHUTTER BLADES CONTRACT INWARD */
-.modal-overlay.closing .blade-1 { animation: bladeClose1 0.35s cubic-bezier(0.7, 0, 0.84, 0) forwards; }
-.modal-overlay.closing .blade-2 { animation: bladeClose2 0.35s cubic-bezier(0.7, 0, 0.84, 0) forwards; }
-.modal-overlay.closing .blade-3 { animation: bladeClose3 0.35s cubic-bezier(0.7, 0, 0.84, 0) forwards; }
-.modal-overlay.closing .blade-4 { animation: bladeClose4 0.35s cubic-bezier(0.7, 0, 0.84, 0) forwards; }
-.modal-overlay.closing .blade-5 { animation: bladeClose5 0.35s cubic-bezier(0.7, 0, 0.84, 0) forwards; }
-.modal-overlay.closing .blade-6 { animation: bladeClose6 0.35s cubic-bezier(0.7, 0, 0.84, 0) forwards; }
-
-@keyframes bladeClose1 { from { transform: rotate(50deg) translate(30vmax, -20vmax); } to { transform: rotate(0deg) translate(0, 0); } }
-@keyframes bladeClose2 { from { transform: rotate(110deg) translate(30vmax, -20vmax); } to { transform: rotate(60deg) translate(0, 0); } }
-@keyframes bladeClose3 { from { transform: rotate(170deg) translate(30vmax, -20vmax); } to { transform: rotate(120deg) translate(0, 0); } }
-@keyframes bladeClose4 { from { transform: rotate(230deg) translate(30vmax, -20vmax); } to { transform: rotate(180deg) translate(0, 0); } }
-@keyframes bladeClose5 { from { transform: rotate(290deg) translate(30vmax, -20vmax); } to { transform: rotate(240deg) translate(0, 0); } }
-@keyframes bladeClose6 { from { transform: rotate(350deg) translate(30vmax, -20vmax); } to { transform: rotate(300deg) translate(0, 0); } }
-
-/* LENS FLARE / FLASH EFFECT */
-.lens-flash {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: radial-gradient(circle at center, rgba(180, 255, 180, 0.85) 0%, rgba(0, 255, 0, 0.4) 35%, transparent 70%);
-    pointer-events: none;
-    z-index: 2010;
-    opacity: 0;
-}
-
-.modal-overlay.opening .lens-flash {
-    animation: lensFlareFlash 0.45s ease-out forwards;
-}
-
-@keyframes lensFlareFlash {
-    0% { opacity: 0; transform: scale(0.2); }
-    30% { opacity: 0.9; transform: scale(1); }
-    100% { opacity: 0; transform: scale(1.6); }
-}
-
-/* MODAL VIEWFINDER SCREEN */
+/* MODAL VIEWFINDER SCREEN (GPU ACCELERATED) */
 .modal-content {
     width: 90%;
-    max-width: 980px;
+    max-width: 960px;
     background: #000;
     border: 2px solid var(--term-green);
-    box-shadow: 0 0 35px rgba(0, 255, 0, 0.35), inset 0 0 15px rgba(0, 20, 0, 0.8);
+    box-shadow: 0 0 25px rgba(0, 255, 0, 0.25);
     position: relative;
     display: flex;
     flex-direction: column;
     z-index: 2002;
     overflow: hidden;
+    will-change: transform, opacity;
 }
 
-/* OPENING ANIMATION: MECHANICAL CAMERA LENS APERTURE */
+/* FLUID OPENING ANIMATION: CLEAN SCALE SPRING (60 FPS) */
 .modal-overlay.opening .modal-content {
-    animation: lensApertureOpen 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    animation: modalSnapOpen 0.26s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-@keyframes lensApertureOpen {
+@keyframes modalSnapOpen {
     0% {
         opacity: 0;
-        transform: scale(0.18) rotate(-8deg);
-        clip-path: circle(3% at 50% 50%);
-        filter: blur(8px) brightness(2.8);
-    }
-    45% {
-        opacity: 1;
-        filter: blur(2px) brightness(1.6);
-        clip-path: circle(42% at 50% 50%);
-    }
-    80% {
-        transform: scale(1.02) rotate(1deg);
-        filter: brightness(1.1);
-        clip-path: circle(82% at 50% 50%);
+        transform: scale(0.9);
     }
     100% {
         opacity: 1;
-        transform: scale(1) rotate(0deg);
-        filter: none;
-        clip-path: circle(100% at 50% 50%);
+        transform: scale(1);
     }
 }
 
-/* CLOSING ANIMATION: APERTURE AND CRT COLLAPSE */
+/* FLUID CLOSING ANIMATION: CRISP COLLAPSE (60 FPS) */
 .modal-overlay.closing .modal-content {
-    animation: lensApertureClose 0.35s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+    animation: modalSnapClose 0.18s cubic-bezier(0.4, 0, 1, 1) forwards;
 }
 
-@keyframes lensApertureClose {
+@keyframes modalSnapClose {
     0% {
         opacity: 1;
-        transform: scale(1) rotate(0deg);
-        clip-path: circle(100% at 50% 50%);
-        filter: none;
-    }
-    40% {
-        opacity: 0.95;
-        transform: scale(0.92) rotate(-3deg);
-        filter: brightness(1.6);
-        clip-path: circle(38% at 50% 50%);
+        transform: scale(1);
     }
     100% {
         opacity: 0;
-        transform: scale(0.08) rotate(-18deg);
-        clip-path: circle(0% at 50% 50%);
-        filter: blur(12px) brightness(0);
+        transform: scale(0.92);
     }
+}
+
+/* MECHANICAL CAMERA SHUTTER BLADES (FLUID GPU TRANSLATE) */
+.camera-shutter-blade {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 50%;
+    background: #001400;
+    z-index: 25;
+    pointer-events: none;
+    will-change: transform;
+    transition: transform 0.26s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.shutter-blade-top {
+    top: 0;
+    border-bottom: 2px solid var(--term-green);
+    box-shadow: 0 4px 15px rgba(0, 255, 0, 0.3);
+    transform: translateY(0%);
+}
+
+.shutter-blade-bottom {
+    bottom: 0;
+    border-top: 2px solid var(--term-green);
+    box-shadow: 0 -4px 15px rgba(0, 255, 0, 0.3);
+    transform: translateY(0%);
+}
+
+/* OPEN STATE: SHUTTER BLADES SLIDE OPEN SMOOTHLY */
+.modal-overlay.active:not(.closing) .shutter-blade-top {
+    transform: translateY(-100%);
+}
+
+.modal-overlay.active:not(.closing) .shutter-blade-bottom {
+    transform: translateY(100%);
+}
+
+/* CLOSING STATE: SHUTTER BLADES SNAP SHUT */
+.modal-overlay.closing .shutter-blade-top {
+    transform: translateY(0%);
+    transition: transform 0.16s cubic-bezier(0.7, 0, 0.84, 0);
+}
+
+.modal-overlay.closing .shutter-blade-bottom {
+    transform: translateY(0%);
+    transition: transform 0.16s cubic-bezier(0.7, 0, 0.84, 0);
 }
 
 /* VIEWFINDER TARGET LOCK BRACKETS */

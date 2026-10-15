@@ -178,22 +178,8 @@
         </div>
     </div>
 
-    <!-- MODAL DETALLE CÁMARA (APERTURE SHUTTER ANIMATION) -->
+    <!-- MODAL DETALLE CÁMARA (FLUID SHUTTER ANIMATION) -->
     <div id="camera-modal" class="modal-overlay" onclick="handleBackdropClick(event)">
-        <!-- Mechanical Iris Shutter Blades Overlay -->
-        <div class="iris-shutter" id="iris-shutter">
-            <div class="iris-blade blade-1"></div>
-            <div class="iris-blade blade-2"></div>
-            <div class="iris-blade blade-3"></div>
-            <div class="iris-blade blade-4"></div>
-            <div class="iris-blade blade-5"></div>
-            <div class="iris-blade blade-6"></div>
-            <div class="iris-lens-ring"></div>
-        </div>
-
-        <!-- Lens Flare / Flash -->
-        <div class="lens-flash" id="lens-flash"></div>
-
         <!-- Camera Screen Viewfinder -->
         <div class="modal-content" id="modal-content-box">
             <!-- Focus Lock Brackets -->
@@ -212,6 +198,10 @@
             </div>
 
             <div class="modal-body">
+                <!-- Mechanical Camera Shutter Blades (GPU Accelerated) -->
+                <div class="camera-shutter-blade shutter-blade-top"></div>
+                <div class="camera-shutter-blade shutter-blade-bottom"></div>
+
                 <!-- Optical Center Crosshair -->
                 <div class="optical-crosshair"></div>
                 <div class="rule-of-thirds"></div>

@@ -383,10 +383,10 @@ function abrirModal(id) {
     modal.classList.remove('closing');
     modal.classList.add('active', 'opening');
 
-    // Remove opening class after animation completes (450ms)
+    // Remove opening class after animation completes (280ms)
     setTimeout(() => {
         modal.classList.remove('opening');
-    }, 460);
+    }, 280);
 
     // Initial image load
     cargarImagenModal(id);
@@ -410,7 +410,7 @@ function cerrarModal() {
     modal.classList.remove('opening');
     modal.classList.add('closing');
 
-    // After closing animation completes (350ms), hide modal completely
+    // After closing animation completes (200ms), hide modal completely
     setTimeout(() => {
         modal.classList.remove('active', 'closing');
         const img = document.getElementById('modal-img');
@@ -418,7 +418,7 @@ function cerrarModal() {
         currentModalId = null;
         currentZoomLevel = 1;
         actualizarZoomModal();
-    }, 360);
+    }, 200);
 }
 
 // Close when clicking outside content (backdrop)
