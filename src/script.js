@@ -515,14 +515,12 @@ function iniciarAutoRefrescoModal(id) {
     modalRefreshInterval = setInterval(() => {
         if (currentModalId === id) {
             cargarImagenModal(id);
-            sfx.shutter(); // Soft shutter snapshot audio
         }
     }, REFRESH_INTERVAL_MS);
 }
 
 function forzarRefrescoCamara() {
     if (!currentModalId) return;
-    sfx.shutter();
     cargarImagenModal(currentModalId);
     // Restart cycle
     iniciarAutoRefrescoModal(currentModalId);
