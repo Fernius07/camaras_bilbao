@@ -44,6 +44,15 @@ function getCoordenadasCamara(id) {
     return { lat: 43.2630, lng: -2.9350 };
 }
 
+// Helper: Get camera image URL by ID (supports GeoBilbao and Trafikoa Euskadi URLs)
+function getUrlCamara(id, timestamp) {
+    const cam = CAMERAS.find(c => c.id === id);
+    const baseUrl = (cam && cam.url)
+        ? cam.url
+        : `https://www.geobilbao.eus/geobilbao/api/cameraImage/GEOBILBAO_CamarasMunicipales/${id}`;
+    return timestamp ? `${baseUrl}${baseUrl.includes('?') ? '&' : '?'}t=${timestamp}` : baseUrl;
+}
+
 // --- AUDIO SYSTEM (WEB AUDIO API SYNTHESIS) ---
 const AudioCtx = window.AudioContext || window.webkitAudioContext;
 let audioCtx;
@@ -258,7 +267,7 @@ function initTacticalMap() {
     map = L.map('tactical-map', {
         center: bilbaoCenter,
         zoom: initialZoom,
-        minZoom: 11,
+        minZoom: 7,
         maxZoom: 18,
         zoomControl: true,
         attributionControl: true
@@ -266,14 +275,14 @@ function initTacticalMap() {
 
     // 100% Free OpenStreetMap Dark Tactical Tile Layer (NO API KEY REQUIRED)
     tileLayers['osm-dark'] = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors | GeoBilbao',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors | GeoBilbao / Trafikoa',
         maxZoom: 19,
         className: 'tactical-tiles'
     });
 
     // 100% Free Esri Satellite Tactical Layer (NO API KEY REQUIRED)
     tileLayers['satellite'] = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: '&copy; Esri, Maxar | GeoBilbao',
+        attribution: '&copy; Esri, Maxar | GeoBilbao / Trafikoa',
         maxZoom: 19,
         className: 'satellite-tiles'
     });
@@ -334,6 +343,7 @@ function renderizarMarcadoresMapa() {
         const marker = L.marker([cam.lat, cam.lng], { icon: customIcon });
 
         // Tactical HUD Tooltip
+        const extraRoadInfo = cam.road ? ` // VÍA: ${cam.road}${cam.pk ? ` (PK ${cam.pk})` : ''}` : '';
         const tooltipContent = `
             <div class="tactical-tooltip">
                 <div class="tooltip-cam-id">
@@ -341,7 +351,7 @@ function renderizarMarcadoresMapa() {
                     <span style="color:var(--term-green); font-size:10px;">● ENLACE ACTIVO</span>
                 </div>
                 <div class="tooltip-cam-name">${cam.name}</div>
-                <div class="tooltip-cam-district">DISTRITO: ${cam.district} // ${cam.lat.toFixed(4)}N, ${cam.lng.toFixed(4)}W</div>
+                <div class="tooltip-cam-district">SECTOR: ${cam.district}${extraRoadInfo} // ${cam.lat.toFixed(4)}N, ${cam.lng.toFixed(4)}W</div>
                 <div class="tooltip-cam-prompt">[ CLICK: ABRIR CÁMARA ]</div>
             </div>
         `;
@@ -389,7 +399,15 @@ function abrirModal(id) {
     // Update modal labels
     document.getElementById('modal-cam-name').innerText = `CAM_${String(id).padStart(3, '0')} // ${cam.name.toUpperCase()}`;
     document.getElementById('modal-district-badge').innerText = cam.district;
-    document.getElementById('modal-cam-data').innerText = `ID: ${id} | COORDENADAS: ${cam.lat.toFixed(5)}° N, ${cam.lng.toFixed(5)}° W | ${cam.name}`;
+    const pkStr = cam.pk ? ` | PK: ${cam.pk}` : '';
+    document.getElementById('modal-cam-data').innerText = `ID: ${id} | COORDENADAS: ${cam.lat.toFixed(5)}° N, ${cam.lng.toFixed(5)}° W${pkStr} | ${cam.name}`;
+
+    const sourceTag = document.querySelector('.source-tag');
+    if (sourceTag) {
+        sourceTag.innerText = cam.url
+            ? 'TRAFIKOA GOBIERNO VASCO // ENLACE SEGURO'
+            : 'GEOBILBAO AYTO. BILBAO // ENLACE SEGURO';
+    }
 
     // Reset zoom
     currentZoomLevel = 1;
@@ -455,7 +473,7 @@ window.addEventListener('keydown', (e) => {
 function cargarImagenModal(id) {
     const imgEl = document.getElementById('modal-img');
     const timestamp = new Date().getTime();
-    const targetUrl = `https://www.geobilbao.eus/geobilbao/api/cameraImage/GEOBILBAO_CamarasMunicipales/${id}?t=${timestamp}`;
+    const targetUrl = getUrlCamara(id, timestamp);
 
     // Preload image
     const preloader = new Image();
@@ -807,7 +825,7 @@ function generarGrilla(searchQuery = '') {
                 <span>${cam.district}</span>
             </div>
             <div class="cam-feed">
-                <img id="img-cam-${cam.id}" src="https://www.geobilbao.eus/geobilbao/api/cameraImage/GEOBILBAO_CamarasMunicipales/${cam.id}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMzAwIDIwMCI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwMDAiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIyMCIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U0lHTkFMIExPU1Q8L3RleHQ+PC9zdmc+'" alt="Cámara ${cam.id}">
+                <img id="img-cam-${cam.id}" src="${getUrlCamara(cam.id)}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMzAwIDIwMCI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwMDAiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIyMCIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U0lHTkFMIExPU1Q8L3RleHQ+PC9zdmc+'" alt="Cámara ${cam.id}">
                 <div class="feed-overlay"><div class="rec-dot"></div> EN VIVO</div>
             </div>
             <div class="cam-footer">
