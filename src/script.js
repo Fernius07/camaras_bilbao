@@ -507,33 +507,17 @@ function dispararEfectoDestelloCuadro() {
     flashEl.classList.add('flash-active');
 }
 
-// Automatic image refresh with countdown bar
+// Automatic image refresh in background
 function iniciarAutoRefrescoModal(id) {
     limpiarIntervalosModal();
 
     const REFRESH_INTERVAL_MS = 3500;
-    let elapsedMs = 0;
-    const stepMs = 50;
-
-    const progressBar = document.getElementById('refresh-progress-bar');
-    const countdownText = document.getElementById('refresh-countdown-text');
-
-    modalProgressInterval = setInterval(() => {
-        elapsedMs += stepMs;
-        const progressPercent = Math.min(100, (elapsedMs / REFRESH_INTERVAL_MS) * 100);
-        if (progressBar) progressBar.style.width = `${progressPercent}%`;
-
-        const remainingSec = Math.max(0, ((REFRESH_INTERVAL_MS - elapsedMs) / 1000)).toFixed(1);
-        if (countdownText) countdownText.innerText = `${remainingSec}s`;
-
-        if (elapsedMs >= REFRESH_INTERVAL_MS) {
-            elapsedMs = 0;
-            if (currentModalId === id) {
-                cargarImagenModal(id);
-                sfx.shutter(); // Soft shutter snapshot audio
-            }
+    modalRefreshInterval = setInterval(() => {
+        if (currentModalId === id) {
+            cargarImagenModal(id);
+            sfx.shutter(); // Soft shutter snapshot audio
         }
-    }, stepMs);
+    }, REFRESH_INTERVAL_MS);
 }
 
 function forzarRefrescoCamara() {
