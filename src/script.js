@@ -805,9 +805,13 @@ function toggleSidebarMobile() {
     if (backdrop) backdrop.classList.toggle('active');
 }
 
-// --- GRID VIEW GENERATION (MODO MATRIZ CON 4 DESPLEGABLES) ---
+// --- GRID VIEW GENERATION (MODO MATRIZ CON 4 DESPLEGABLES Y REFRESCO EN TIEMPO REAL) ---
 
 const openMatrixGroups = new Set();
+const visibleMatrixCams = new Set();
+const lastMatrixCamRefresh = new Map();
+let matrixRefreshInterval = null;
+let matrixObserver = null;
 
 const MATRIX_GROUPS = [
     {
@@ -836,11 +840,84 @@ const MATRIX_GROUPS = [
     }
 ];
 
+function refrescarImagenTarjeta(camId) {
+    const imgEl = document.getElementById(`img-cam-${camId}`);
+    if (!imgEl || imgEl.dataset.loading === 'true') return;
+
+    const timestamp = Date.now();
+    const targetUrl = getUrlCamara(camId, timestamp);
+    imgEl.dataset.loading = 'true';
+
+    const preloader = new Image();
+    preloader.onload = () => {
+        const currentImg = document.getElementById(`img-cam-${camId}`);
+        if (currentImg) {
+            currentImg.src = targetUrl;
+            currentImg.dataset.loading = 'false';
+            lastMatrixCamRefresh.set(camId, Date.now());
+        }
+    };
+    preloader.onerror = () => {
+        const currentImg = document.getElementById(`img-cam-${camId}`);
+        if (currentImg) {
+            currentImg.dataset.loading = 'false';
+        }
+    };
+    preloader.src = targetUrl;
+}
+
+function asegurarObservadorMatriz() {
+    if (matrixObserver || typeof IntersectionObserver === 'undefined') return;
+    const scrollRoot = document.getElementById('view-grid') || null;
+    matrixObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            const camId = Number(entry.target.dataset.camId);
+            if (!camId) return;
+            if (entry.isIntersecting) {
+                visibleMatrixCams.add(camId);
+                const lastUpdate = lastMatrixCamRefresh.get(camId) || 0;
+                if (Date.now() - lastUpdate > 3000) {
+                    refrescarImagenTarjeta(camId);
+                }
+            } else {
+                visibleMatrixCams.delete(camId);
+            }
+        });
+    }, {
+        root: scrollRoot,
+        rootMargin: '500px 0px',
+        threshold: 0.01
+    });
+}
+
+function iniciarAutoRefrescoMatriz() {
+    if (matrixRefreshInterval) return;
+    matrixRefreshInterval = setInterval(() => {
+        if (currentView !== 'grid') return;
+        if (visibleMatrixCams.size > 0) {
+            visibleMatrixCams.forEach(camId => {
+                refrescarImagenTarjeta(camId);
+            });
+        } else if (typeof IntersectionObserver === 'undefined') {
+            document.querySelectorAll('#tablaCamaras .cam-card[data-cam-id]').forEach(card => {
+                const camId = Number(card.dataset.camId);
+                if (camId) refrescarImagenTarjeta(camId);
+            });
+        }
+    }, 3500);
+}
+
 function renderizarTarjetasGrupo(gridEl, cameras) {
+    asegurarObservadorMatriz();
+    iniciarAutoRefrescoMatriz();
+
     gridEl.innerHTML = '';
+    const now = Date.now();
+
     cameras.forEach(cam => {
         const card = document.createElement('div');
         card.className = 'cam-card';
+        card.dataset.camId = cam.id;
         card.onclick = () => abrirModal(cam.id);
         card.innerHTML = `
             <div class="cam-header">
@@ -848,7 +925,7 @@ function renderizarTarjetasGrupo(gridEl, cameras) {
                 <span>${cam.district}</span>
             </div>
             <div class="cam-feed">
-                <img id="img-cam-${cam.id}" src="${getUrlCamara(cam.id)}" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMzAwIDIwMCI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwMDAiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIyMCIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U0lHTkFMIExPU1Q8L3RleHQ+PC9zdmc+'" alt="Cámara ${cam.id}">
+                <img id="img-cam-${cam.id}" src="${getUrlCamara(cam.id, now)}" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMzAwIDIwMCI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwMDAiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIyMCIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U0lHTkFMIExPU1Q8L3RleHQ+PC9zdmc+'" alt="Cámara ${cam.id}">
                 <div class="feed-overlay"><div class="rec-dot"></div> EN VIVO</div>
             </div>
             <div class="cam-footer">
@@ -856,13 +933,24 @@ function renderizarTarjetasGrupo(gridEl, cameras) {
                 <span>${cam.lat.toFixed(4)}N, ${cam.lng.toFixed(4)}W</span>
             </div>
         `;
+        lastMatrixCamRefresh.set(cam.id, now);
         gridEl.appendChild(card);
+        if (matrixObserver) {
+            matrixObserver.observe(card);
+        } else {
+            visibleMatrixCams.add(cam.id);
+        }
     });
 }
 
 function generarGrilla(searchQuery = '') {
     const container = document.getElementById('tablaCamaras');
     if (!container) return;
+
+    if (matrixObserver) {
+        matrixObserver.disconnect();
+    }
+    visibleMatrixCams.clear();
     container.innerHTML = '';
 
     const allowedIds = new Set(DISTRITOS[activeDistrict] || CAMERAS.map(c => c.id));
@@ -876,7 +964,7 @@ function generarGrilla(searchQuery = '') {
 
     MATRIX_GROUPS.forEach(group => {
         const groupCameras = filteredCameras.filter(group.filter);
-        const isOpen = openMatrixGroups.has(group.key);
+        const isOpen = openMatrixGroups.has(group.key) || (q.length > 0 && groupCameras.length > 0);
 
         const accordion = document.createElement('div');
         accordion.className = `matrix-accordion${isOpen ? ' open' : ''}`;
@@ -900,18 +988,15 @@ function generarGrilla(searchQuery = '') {
         gridEl.className = 'grid-layout';
         body.appendChild(gridEl);
 
-        if (isOpen && groupCameras.length > 0) {
-            renderizarTarjetasGrupo(gridEl, groupCameras);
-        }
-
         header.onclick = () => {
             sfx.init();
             sfx.beep();
             const arrowEl = header.querySelector('.accordion-arrow');
-            if (openMatrixGroups.has(group.key)) {
+            if (accordion.classList.contains('open')) {
                 openMatrixGroups.delete(group.key);
                 accordion.classList.remove('open');
                 if (arrowEl) arrowEl.innerText = '▶';
+                groupCameras.forEach(cam => visibleMatrixCams.delete(cam.id));
                 gridEl.innerHTML = '';
             } else {
                 openMatrixGroups.add(group.key);
@@ -924,6 +1009,10 @@ function generarGrilla(searchQuery = '') {
         accordion.appendChild(header);
         accordion.appendChild(body);
         container.appendChild(accordion);
+
+        if (isOpen && groupCameras.length > 0) {
+            renderizarTarjetasGrupo(gridEl, groupCameras);
+        }
     });
 }
 
