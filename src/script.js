@@ -260,12 +260,12 @@ function iniciarSistemaCamaras() {
 function initTacticalMap() {
     if (map) return;
 
-    // Center on Bilbao coordinates
-    const bilbaoCenter = [43.2630, -2.9350];
-    const initialZoom = 13.5;
+    // Center on Euskadi coordinates (Bizkaia, Gipuzkoa, Araba)
+    const euskadiCenter = [43.0600, -2.5200];
+    const initialZoom = 9.5;
 
     map = L.map('tactical-map', {
-        center: bilbaoCenter,
+        center: euskadiCenter,
         zoom: initialZoom,
         minZoom: 7,
         maxZoom: 18,
@@ -275,14 +275,14 @@ function initTacticalMap() {
 
     // 100% Free OpenStreetMap Dark Tactical Tile Layer (NO API KEY REQUIRED)
     tileLayers['osm-dark'] = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors | GeoBilbao / Trafikoa',
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank">OpenStreetMap</a> contributors | Euskadi CCTV',
         maxZoom: 19,
         className: 'tactical-tiles'
     });
 
     // 100% Free Esri Satellite Tactical Layer (NO API KEY REQUIRED)
     tileLayers['satellite'] = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-        attribution: '&copy; Esri, Maxar | GeoBilbao / Trafikoa',
+        attribution: '&copy; Esri, Maxar | Euskadi CCTV',
         maxZoom: 19,
         className: 'satellite-tiles'
     });
@@ -302,7 +302,7 @@ function initTacticalMap() {
     map.on('mouseout', () => {
         const coordsEl = document.getElementById('hud-coordinates');
         if (coordsEl) {
-            coordsEl.innerText = `COORD: 43.26300° N, -2.93500° W`;
+            coordsEl.innerText = `COORD: 43.06000° N, -2.52000° W`;
         }
     });
 
@@ -406,6 +406,8 @@ function abrirModal(id) {
     if (sourceTag) {
         if (cam.district === 'VITORIA-GASTEIZ') {
             sourceTag.innerText = 'AYTO. VITORIA-GASTEIZ // ENLACE SEGURO';
+        } else if (cam.district === 'TRÁFICO BIZKAIA') {
+            sourceTag.innerText = 'DIPUTACIÓN FORAL DE BIZKAIA // ENLACE SEGURO';
         } else if (cam.url) {
             sourceTag.innerText = 'TRAFIKOA GOBIERNO VASCO // ENLACE SEGURO';
         } else {
@@ -674,7 +676,7 @@ function cargarDistrito(nombre) {
     // Fly to bounds if district selected
     if (map && bounds.length > 0) {
         if (nombre === 'TODO') {
-            map.flyTo([43.2630, -2.9350], 13.5, { duration: 1 });
+            map.flyTo([43.0600, -2.5200], 9.5, { duration: 1 });
         } else {
             const latLngBounds = L.latLngBounds(bounds);
             map.flyToBounds(latLngBounds, {
@@ -787,7 +789,7 @@ function cambiarCapaMapa(tipo) {
 function centrarBilbao() {
     sfx.beep();
     if (map) {
-        map.flyTo([43.2630, -2.9350], 13.5, { duration: 1.2 });
+        map.flyTo([43.0600, -2.5200], 9.5, { duration: 1.2 });
     }
 }
 
@@ -803,7 +805,60 @@ function toggleSidebarMobile() {
     if (backdrop) backdrop.classList.toggle('active');
 }
 
-// --- GRID VIEW GENERATION (MODO MATRIZ) ---
+// --- GRID VIEW GENERATION (MODO MATRIZ CON 4 DESPLEGABLES) ---
+
+const openMatrixGroups = new Set();
+
+const MATRIX_GROUPS = [
+    {
+        key: 'bilbao',
+        title: 'CÁMARAS BILBAO',
+        subtitle: 'AYUNTAMIENTO DE BILBAO // GEOBILBAO',
+        filter: (c) => c.id < 1000
+    },
+    {
+        key: 'vitoria',
+        title: 'CÁMARAS VITORIA',
+        subtitle: 'AYUNTAMIENTO DE VITORIA-GASTEIZ',
+        filter: (c) => c.id >= 2000 && c.id < 3000
+    },
+    {
+        key: 'trafikoa',
+        title: 'CÁMARAS TRAFIKOA EUSKADI',
+        subtitle: 'GOBIERNO VASCO // RED VIARIA DE EUSKADI',
+        filter: (c) => c.id >= 1000 && c.id < 2000
+    },
+    {
+        key: 'bizkaia',
+        title: 'CÁMARAS TRÁFICO BIZKAIA',
+        subtitle: 'DIPUTACIÓN FORAL DE BIZKAIA // INTERBIAK',
+        filter: (c) => c.id >= 3000
+    }
+];
+
+function renderizarTarjetasGrupo(gridEl, cameras) {
+    gridEl.innerHTML = '';
+    cameras.forEach(cam => {
+        const card = document.createElement('div');
+        card.className = 'cam-card';
+        card.onclick = () => abrirModal(cam.id);
+        card.innerHTML = `
+            <div class="cam-header">
+                <span>CAM_${String(cam.id).padStart(3, '0')}</span>
+                <span>${cam.district}</span>
+            </div>
+            <div class="cam-feed">
+                <img id="img-cam-${cam.id}" src="${getUrlCamara(cam.id)}" loading="lazy" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMzAwIDIwMCI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwMDAiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIyMCIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U0lHTkFMIExPU1Q8L3RleHQ+PC9zdmc+'" alt="Cámara ${cam.id}">
+                <div class="feed-overlay"><div class="rec-dot"></div> EN VIVO</div>
+            </div>
+            <div class="cam-footer">
+                <span>${cam.name}</span>
+                <span>${cam.lat.toFixed(4)}N, ${cam.lng.toFixed(4)}W</span>
+            </div>
+        `;
+        gridEl.appendChild(card);
+    });
+}
 
 function generarGrilla(searchQuery = '') {
     const container = document.getElementById('tablaCamaras');
@@ -814,30 +869,61 @@ function generarGrilla(searchQuery = '') {
     const q = searchQuery.toLowerCase().trim();
 
     const filteredCameras = CAMERAS.filter(c => {
-        const matchesDistrict = allowedIds.has(c.id);
+        const matchesDistrict = (activeDistrict === 'TODO' || allowedIds.has(c.id));
         const matchesQuery = !q || c.name.toLowerCase().includes(q) || String(c.id).includes(q) || c.district.toLowerCase().includes(q);
         return matchesDistrict && matchesQuery;
     });
 
-    filteredCameras.forEach(cam => {
-        const card = document.createElement('div');
-        card.className = 'cam-card';
-        card.onclick = () => abrirModal(cam.id);
-        card.innerHTML = `
-            <div class="cam-header">
-                <span>CAM_${String(cam.id).padStart(3, '0')}</span>
-                <span>${cam.district}</span>
+    MATRIX_GROUPS.forEach(group => {
+        const groupCameras = filteredCameras.filter(group.filter);
+        const isOpen = openMatrixGroups.has(group.key);
+
+        const accordion = document.createElement('div');
+        accordion.className = `matrix-accordion${isOpen ? ' open' : ''}`;
+        accordion.id = `accordion-${group.key}`;
+
+        const header = document.createElement('button');
+        header.type = 'button';
+        header.className = 'matrix-accordion-header';
+        header.innerHTML = `
+            <div class="accordion-header-left">
+                <span class="accordion-arrow">${isOpen ? '▼' : '▶'}</span>
+                <span class="accordion-title">${group.title}</span>
+                <span class="accordion-subtitle">// ${group.subtitle}</span>
             </div>
-            <div class="cam-feed">
-                <img id="img-cam-${cam.id}" src="${getUrlCamara(cam.id)}" onerror="this.src='data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMjAwIiB2aWV3Qm94PSIwIDAgMzAwIDIwMCI+PHJlY3Qgd2lkdGg9IjMwMCIgaGVpZ2h0PSIyMDAiIGZpbGw9IiMwMDAiLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZm9udC1mYW1pbHk9Im1vbm9zcGFjZSIgZm9udC1zaXplPSIyMCIgZmlsbD0iIzMzMyIgdGV4dC1hbmNob3I9Im1pZGRsZSI+U0lHTkFMIExPU1Q8L3RleHQ+PC9zdmc+'" alt="Cámara ${cam.id}">
-                <div class="feed-overlay"><div class="rec-dot"></div> EN VIVO</div>
-            </div>
-            <div class="cam-footer">
-                <span>${cam.name}</span>
-                <span>${cam.lat.toFixed(4)}N, ${cam.lng.toFixed(4)}W</span>
-            </div>
+            <span class="accordion-count">${groupCameras.length} CÁMARAS</span>
         `;
-        container.appendChild(card);
+
+        const body = document.createElement('div');
+        body.className = 'matrix-accordion-body';
+        const gridEl = document.createElement('div');
+        gridEl.className = 'grid-layout';
+        body.appendChild(gridEl);
+
+        if (isOpen && groupCameras.length > 0) {
+            renderizarTarjetasGrupo(gridEl, groupCameras);
+        }
+
+        header.onclick = () => {
+            sfx.init();
+            sfx.beep();
+            const arrowEl = header.querySelector('.accordion-arrow');
+            if (openMatrixGroups.has(group.key)) {
+                openMatrixGroups.delete(group.key);
+                accordion.classList.remove('open');
+                if (arrowEl) arrowEl.innerText = '▶';
+                gridEl.innerHTML = '';
+            } else {
+                openMatrixGroups.add(group.key);
+                accordion.classList.add('open');
+                if (arrowEl) arrowEl.innerText = '▼';
+                renderizarTarjetasGrupo(gridEl, groupCameras);
+            }
+        };
+
+        accordion.appendChild(header);
+        accordion.appendChild(body);
+        container.appendChild(accordion);
     });
 }
 

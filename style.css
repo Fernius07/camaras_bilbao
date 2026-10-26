@@ -820,6 +820,102 @@ body::before {
     position: relative;
 }
 
+.matrix-accordions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.matrix-accordion {
+    border: 1px solid var(--term-dim);
+    background: rgba(0, 18, 0, 0.45);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.matrix-accordion.open {
+    border-color: var(--term-green);
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.15);
+}
+
+.matrix-accordion-header {
+    width: 100%;
+    padding: 14px 18px;
+    background: rgba(0, 32, 0, 0.85);
+    border: none;
+    color: var(--term-bright);
+    font-family: var(--font-stack);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    text-align: left;
+    transition: background 0.2s ease, color 0.2s ease;
+}
+
+.matrix-accordion-header:hover {
+    background: rgba(0, 60, 0, 0.9);
+    color: #fff;
+}
+
+.matrix-accordion.open .matrix-accordion-header {
+    border-bottom: 1px solid var(--term-green);
+    background: rgba(0, 50, 0, 0.95);
+}
+
+.accordion-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.accordion-arrow {
+    color: var(--term-green);
+    font-size: 13px;
+    width: 16px;
+    display: inline-block;
+    transition: transform 0.2s ease;
+}
+
+.accordion-title {
+    font-size: 15px;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    color: var(--term-green);
+}
+
+.accordion-subtitle {
+    font-size: 11px;
+    color: var(--term-dim);
+    letter-spacing: 0.8px;
+}
+
+.accordion-count {
+    font-size: 11px;
+    color: var(--term-bright);
+    background: rgba(0, 255, 0, 0.1);
+    border: 1px solid var(--term-dim);
+    padding: 4px 10px;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.matrix-accordion.open .accordion-count {
+    border-color: var(--term-green);
+    color: #fff;
+    background: rgba(0, 255, 0, 0.2);
+}
+
+.matrix-accordion-body {
+    display: none;
+    padding: 18px;
+    background: rgba(0, 8, 0, 0.6);
+}
+
+.matrix-accordion.open .matrix-accordion-body {
+    display: block;
+}
+
 .grid-layout {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));

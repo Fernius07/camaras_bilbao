@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>SISTEMA DE CÁMARAS - BILBAO</title>
+    <title>SISTEMA DE CÁMARAS - EUSKADI</title>
     <!-- Tech font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,7 +25,7 @@
     <div id="login-screen">
         <div class="login-panel">
             <div class="login-header">
-                <div style="font-size: 12px; color: var(--term-dim); margin-bottom: 5px;">SISTEMA SEGURIDAD MUNICIPAL</div>
+                <div style="font-size: 12px; color: var(--term-dim); margin-bottom: 5px;">SISTEMA DE SEGURIDAD DE EUSKADI</div>
                 ACCESO CONTROLADO
             </div>
 
@@ -54,12 +54,12 @@
         <div class="top-bar">
             <div class="top-bar-left">
                 <button id="btn-toggle-sidebar" class="btn-mobile-sidebar" onclick="toggleSidebarMobile()" aria-label="Abrir panel">
-                    <span>☰</span> <span class="btn-sidebar-label">DISTRITOS</span>
+                    <span>☰</span> <span class="btn-sidebar-label">SECTORES</span>
                 </button>
                 <div class="system-title">
                     <div class="shield-icon">🛡</div>
-                    <span class="title-full">CENTRO DE SEGURIDAD DE BILBAO</span>
-                    <span class="title-short">BILBAO CCTV</span>
+                    <span class="title-full">CENTRO DE SEGURIDAD DE EUSKADI</span>
+                    <span class="title-short">EUSKADI CCTV</span>
                 </div>
             </div>
 
@@ -96,13 +96,13 @@
                 <div class="sidebar-folder">
                     <h3>LOCALIZADOR</h3>
                     <div class="search-box">
-                        <input type="text" id="camera-search" placeholder="BUSCAR CALLE O ID..." oninput="filtrarPorTexto(this.value)">
+                        <input type="text" id="camera-search" placeholder="BUSCAR CALLE, VÍA O ID..." oninput="filtrarPorTexto(this.value)">
                         <button id="btn-clear-search" onclick="limpiarBusqueda()">×</button>
                     </div>
                 </div>
 
                 <div class="sidebar-folder">
-                    <h3>DISTRITOS</h3>
+                    <h3>SECTORES Y DISTRITOS</h3>
                     <div id="district-list">
                         <!-- Populated by JS -->
                     </div>
@@ -113,7 +113,7 @@
                     <div class="stats-content">
                         <div>CPU LOAD: <span style="color:var(--term-green);">24%</span></div>
                         <div>NET DO: <span style="color:var(--term-green);">1.4 GB/s</span></div>
-                        <div>CÁMARAS: <span id="feed-count">296 / 296</span></div>
+                        <div>CÁMARAS: <span id="feed-count">387 / 387</span></div>
                         <div>VISTA: <span id="current-view-name">MAPA TÁCTICO</span></div>
                     </div>
                 </div>
@@ -129,13 +129,13 @@
                 <div class="sidebar-folder">
                     <h3>ACCIONES</h3>
                     <div class="radar-controls">
-                        <button class="btn-sidebar-action" onclick="centrarBilbao()">⌖ CENTRAR BILBAO</button>
+                        <button class="btn-sidebar-action" onclick="centrarBilbao()">⌖ CENTRAR EUSKADI</button>
                     </div>
                 </div>
 
                 <div class="legal-box">
                     SISTEMA DE VISUALIZACIÓN INFORMATIVO.
-                    LA PROPIEDAD Y EL FUNCIONAMIENTO DE LAS IMÁGENES CORRESPONDEN AL AYUNTAMIENTO DE BILBAO, AYUNTAMIENTO DE VITORIA-GASTEIZ Y TRAFIKOA EUSKADI.
+                    LA PROPIEDAD Y EL FUNCIONAMIENTO DE LAS IMÁGENES CORRESPONDEN AL AYUNTAMIENTO DE BILBAO, AYUNTAMIENTO DE VITORIA-GASTEIZ, DIPUTACIÓN FORAL DE BIZKAIA Y TRAFIKOA EUSKADI.
                     ESTE PORTAL NO TIENE VÍNCULO OFICIAL CON DICHAS INSTITUCIONES.
                 </div>
             </div>
@@ -147,14 +147,14 @@
                     <div class="map-hud-bar">
                         <div class="hud-sector-tag">
                             <span class="radar-blip"></span>
-                            <span class="hud-tag-full">SECTOR: BILBAO CENTRAL // MALLA ACTIVA</span>
-                            <span class="hud-tag-short">BILBAO CCTV</span>
+                            <span class="hud-tag-full">SECTOR: EUSKADI // MALLA DE VIGILANCIA ACTIVA</span>
+                            <span class="hud-tag-short">EUSKADI CCTV</span>
                         </div>
                         <div class="hud-coords" id="hud-coordinates">
-                            COORD: 43.26300° N, -2.93500° W
+                            COORD: 43.06000° N, -2.52000° W
                         </div>
                         <div class="hud-stats-pill" id="hud-cam-pill">
-                            296 CÁMARAS
+                            387 CÁMARAS
                         </div>
                     </div>
 
@@ -165,8 +165,8 @@
                 <!-- VIEW 2: GRID / MATRIX -->
                 <div id="view-grid" class="viewport-section">
                     <div class="cameras-container">
-                        <div class="grid-layout" id="tablaCamaras">
-                            <!-- Populated by JS if grid mode is selected -->
+                        <div class="matrix-accordions" id="tablaCamaras">
+                            <!-- Populated by JS with 4 collapsible groups -->
                         </div>
                     </div>
                 </div>

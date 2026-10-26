@@ -168,17 +168,17 @@
             shield.innerHTML = `
                 <div class="lockdown-box">
                     <div class="lockdown-header">
-                        <span class="lockdown-badge">SISTEMA DE SEGURIDAD MUNICIPAL</span>
+                        <span class="lockdown-badge">SISTEMA DE SEGURIDAD DE EUSKADI</span>
                         <div class="lockdown-title">⚠️ ACCESO RESTRINGIDO // DEPURADOR DETECTADO ⚠️</div>
                     </div>
                     <div class="lockdown-body">
                         <p class="lockdown-p">Se ha detectado una herramienta de inspección de código o consola de desarrollo activa (F12 / DevTools).</p>
-                        <p class="lockdown-p warning-highlight">Por motivos de seguridad y derechos de autor, el código fuente, la telemetría y los flujos de las cámaras municipales están protegidos contra extracción y réplica no autorizada.</p>
+                        <p class="lockdown-p warning-highlight">Por motivos de seguridad y derechos de autor, el código fuente, la telemetría y los flujos de las cámaras de tráfico de Euskadi están protegidos contra extracción y réplica no autorizada.</p>
                         <p class="lockdown-p"><strong>Cierre las herramientas de desarrollo</strong> para reanudar la señal del centro de mando táctico.</p>
                     </div>
                     <div class="lockdown-footer">
                         <span>ESTADO: BLOQUEO DEFENSIVO ACTIVO</span>
-                        <span>REF: BILBAO-CCTV-SEC-99</span>
+                        <span>REF: EUSKADI-CCTV-SEC-99</span>
                     </div>
                 </div>
             `;
