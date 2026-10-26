@@ -404,9 +404,13 @@ function abrirModal(id) {
 
     const sourceTag = document.querySelector('.source-tag');
     if (sourceTag) {
-        sourceTag.innerText = cam.url
-            ? 'TRAFIKOA GOBIERNO VASCO // ENLACE SEGURO'
-            : 'GEOBILBAO AYTO. BILBAO // ENLACE SEGURO';
+        if (cam.district === 'VITORIA-GASTEIZ') {
+            sourceTag.innerText = 'AYTO. VITORIA-GASTEIZ // ENLACE SEGURO';
+        } else if (cam.url) {
+            sourceTag.innerText = 'TRAFIKOA GOBIERNO VASCO // ENLACE SEGURO';
+        } else {
+            sourceTag.innerText = 'GEOBILBAO AYTO. BILBAO // ENLACE SEGURO';
+        }
     }
 
     // Reset zoom
